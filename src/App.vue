@@ -1,11 +1,20 @@
-<script setup lang="ts"></script>
+<script lang="ts">
+import Footer from './components/Footer.vue'
+import Navbar from './components/Navbar.vue'
+
+export default {
+  name: 'App',
+  components: {
+    Navbar,
+    Footer,
+  },
+}
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <Navbar />
+  <RouterView />
+  <Footer />
 </template>
 
 <style scoped></style>
