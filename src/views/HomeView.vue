@@ -26,7 +26,8 @@
             rental, and smart season tickets.
           </p>
           <div class="flex flex-wrap gap-3">
-            <button
+            <RouterLink
+              :to="{ name: 'courts' }"
               class="flex items-center gap-2 px-6 py-3.5 bg-[#8dc707] text-black font-bold rounded hover:bg-[#9fd608] transition-colors"
             >
               Book a Court
@@ -43,12 +44,13 @@
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
-            </button>
-            <button
+            </RouterLink>
+            <RouterLink
+              :to="{ name: 'subscriptions' }"
               class="flex items-center gap-2 px-6 py-3.5 bg-white/10 text-white font-medium rounded border border-white/20 hover:bg-white/15 transition-colors"
             >
               View Memberships
-            </button>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -56,21 +58,13 @@
 
     <section class="bg-[#8dc707]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div class="flex flex-col">
-          <span class="font-black text-black text-2xl leading-tight">5</span>
-          <span class="text-black/60 text-xs font-medium mt-0.5">Premium Courts</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="font-black text-black text-2xl leading-tight">1,200+</span>
-          <span class="text-black/60 text-xs font-medium mt-0.5">Active Members</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="font-black text-black text-2xl leading-tight">98%</span>
-          <span class="text-black/60 text-xs font-medium mt-0.5">Satisfaction Rate</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="font-black text-black text-2xl leading-tight">3 Surfaces</span>
-          <span class="text-black/60 text-xs font-medium mt-0.5">Clay · Grass · Indoor</span>
+        <div class="flex flex-col" v-for="headingsText in heroSectionDiv">
+          <span class="font-black text-black text-2xl leading-tight">{{
+            headingsText.mainHeading
+          }}</span>
+          <span class="text-black/60 text-xs font-medium mt-0.5">{{
+            headingsText.secondLevelHeading
+          }}</span>
         </div>
       </div>
     </section>
@@ -86,7 +80,8 @@
             Five world-class playing surfaces, maintained to professional standards daily.
           </p>
         </div>
-        <button
+        <RouterLink
+          :to="{ name: 'courts' }"
           class="hidden sm:flex items-center gap-1.5 text-sm font-bold text-black hover:text-[#8dc707] transition-colors"
         >
           Book now
@@ -100,34 +95,36 @@
           >
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
-        </button>
+        </RouterLink>
       </div>
 
       <div class="grid md:grid-cols-2 gap-6">
         <div
+          v-for="court in courts"
           class="group flex flex-col sm:flex-row bg-white border border-black/10 rounded overflow-hidden hover:shadow-lg transition-shadow"
         >
           <div class="relative bg-black/10 shrink-0 sm:w-52 h-48 sm:h-auto">
             <div
-              class="w-full h-full bg-amber-800 flex items-center justify-center text-white/20 font-bold"
+              class="w-full h-full bg-white flex items-center justify-center text-white/20 font-bold"
             >
               Court Image
             </div>
             <div class="absolute top-3 left-3">
               <span
-                class="bg-amber-700 text-white text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded shadow"
-                >Clay</span
+                class="bg-white text-black text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded shadow"
+                >{{ court.surface }}</span
               >
             </div>
           </div>
           <div class="flex flex-col justify-between p-5 flex-1">
             <div>
-              <h3 class="font-black text-black text-xl mb-1">Court Roland</h3>
+              <h3 class="font-black text-black text-xl mb-1">{{ court.name }}</h3>
               <p class="text-black/55 text-sm leading-relaxed mb-3">
-                Premium red clay court with excellent water drainage and professional lighting.
+                {{ court.description }}
               </p>
               <div class="flex flex-wrap gap-1.5">
                 <span
+                  v-for="feature in court.features"
                   class="inline-flex items-center gap-1 bg-black/[0.05] text-black/60 text-xs px-2 py-1 rounded"
                 >
                   <svg
@@ -140,37 +137,23 @@
                   >
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                  Floodlights
-                </span>
-                <span
-                  class="inline-flex items-center gap-1 bg-black/[0.05] text-black/60 text-xs px-2 py-1 rounded"
-                >
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#8dc707"
-                    stroke-width="4"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  Umpire Chair
+                  {{ feature }}
                 </span>
               </div>
             </div>
             <div class="flex items-center justify-between mt-4 pt-4 border-t border-black/[0.08]">
               <div class="flex items-baseline gap-3">
                 <div>
-                  <span class="font-black text-black text-xl">$30</span>
+                  <span class="font-black text-black text-xl">{{ court.pricing[0] }}</span>
                   <span class="text-black/40 text-xs ml-1">day/hr</span>
                 </div>
                 <div>
-                  <span class="font-bold text-black/60 text-sm">$40</span>
+                  <span class="font-bold text-black/60 text-sm">{{ court.pricing[1] }}</span>
                   <span class="text-black/40 text-xs ml-1">eve/hr</span>
                 </div>
               </div>
-              <button
+              <RouterLink
+                :to="{ name: 'courts' }"
                 class="flex items-center gap-1.5 px-4 py-2 bg-black text-[#8dc707] text-sm font-bold rounded hover:opacity-80 transition-opacity"
               >
                 Reserve
@@ -184,77 +167,7 @@
                 >
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="group flex flex-col sm:flex-row bg-white border border-black/10 rounded overflow-hidden hover:shadow-lg transition-shadow"
-        >
-          <div class="relative bg-black/10 shrink-0 sm:w-52 h-48 sm:h-auto">
-            <div
-              class="w-full h-full bg-emerald-800 flex items-center justify-center text-white/20 font-bold"
-            >
-              Court Image
-            </div>
-            <div class="absolute top-3 left-3">
-              <span
-                class="bg-emerald-700 text-white text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded shadow"
-                >Grass</span
-              >
-            </div>
-          </div>
-          <div class="flex flex-col justify-between p-5 flex-1">
-            <div>
-              <h3 class="font-black text-black text-xl mb-1">Court Wimbledon</h3>
-              <p class="text-black/55 text-sm leading-relaxed mb-3">
-                Authentic tournament grass surface offering low bounce and fast-paced rallies.
-              </p>
-              <div class="flex flex-wrap gap-1.5">
-                <span
-                  class="inline-flex items-center gap-1 bg-black/[0.05] text-black/60 text-xs px-2 py-1 rounded"
-                >
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#8dc707"
-                    stroke-width="4"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  Pro-Standard
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center justify-between mt-4 pt-4 border-t border-black/[0.08]">
-              <div class="flex items-baseline gap-3">
-                <div>
-                  <span class="font-black text-black text-xl">$45</span>
-                  <span class="text-black/40 text-xs ml-1">day/hr</span>
-                </div>
-                <div>
-                  <span class="font-bold text-black/60 text-sm">$55</span>
-                  <span class="text-black/40 text-xs ml-1">eve/hr</span>
-                </div>
-              </div>
-              <button
-                class="flex items-center gap-1.5 px-4 py-2 bg-black text-[#8dc707] text-sm font-bold rounded hover:opacity-80 transition-opacity"
-              >
-                Reserve
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                >
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
+              </RouterLink>
             </div>
           </div>
         </div>
@@ -654,3 +567,49 @@
     </section>
   </body>
 </template>
+
+<script>
+export default {
+  name: 'HomeView',
+  data() {
+    return {
+      heroSectionDiv: [
+        {
+          mainHeading: 5,
+          secondLevelHeading: 'Premium Courts',
+        },
+        {
+          mainHeading: '1,200+',
+          secondLevelHeading: 'Active Members',
+        },
+        {
+          mainHeading: '98%',
+          secondLevelHeading: 'Satisfaction Rate',
+        },
+        {
+          mainHeading: '3 Surfaces',
+          secondLevelHeading: 'Clay · Grass · Indoor',
+        },
+      ],
+      courts: [
+        {
+          name: 'Court Roland',
+          description:
+            'Premium red clay court with excellent water drainage and professional lighting.',
+          features: ['Floodlights', 'Umpire Chair'],
+          pricing: ['$30', '$40'],
+          surface: 'Clay',
+        },
+        {
+          name: 'Court Wimbledon',
+          description:
+            'Authentic tournament grass surface offering low bounce and fast-paced rallies.',
+          features: ['Pro-Standard'],
+          pricing: ['$45', '$55'],
+          surface: 'Grass',
+        },
+      ],
+    }
+  },
+}
+</script>

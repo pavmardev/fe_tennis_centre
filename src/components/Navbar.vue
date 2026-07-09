@@ -7,35 +7,22 @@
             <span class="text-[#8dc707] font-black text-base">A</span>
           </div>
           <span class="font-black text-black tracking-tight text-lg hidden sm:block">
-            AceReserve
+            <RouterLink :to="{ name: 'home' }"> AceReserve </RouterLink>
           </span>
         </a>
 
         <nav class="hidden md:flex items-center gap-0.5">
-          <a
-            href="#"
-            class="px-4 py-2 rounded text-sm font-medium transition-colors bg-[#8dc707] text-black no-underline"
-          >
-            Home
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
-          >
-            Book a Court
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
-          >
-            My Bookings
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
-          >
-            Memberships
-          </a>
+          <div v-for="page in pages">
+            <RouterLink
+              :to="{ name: page[1] }"
+              href="#"
+              class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
+              @click="selectedPage"
+              :class="backgroundGreen"
+            >
+              {{ page[0] }}
+            </RouterLink>
+          </div>
         </nav>
 
         <div class="flex items-center gap-2">
@@ -73,41 +60,32 @@
           </button>
         </div>
       </div>
-
-      <div id="mobile-menu" class="hidden md:hidden border-t border-black/10 bg-white px-4 pb-4">
-        <div class="pt-3 flex flex-col gap-1">
-          <a
-            href="#"
-            class="px-4 py-2.5 rounded text-sm font-medium text-left bg-[#8dc707] text-black no-underline"
-          >
-            Home
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2.5 rounded text-sm font-medium text-left text-black/70 hover:bg-black/5 no-underline"
-          >
-            Book a Court
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2.5 rounded text-sm font-medium text-left text-black/70 hover:bg-black/5 no-underline"
-          >
-            My Bookings
-          </a>
-          <a
-            href="#"
-            class="px-4 py-2.5 rounded text-sm font-medium text-left text-black/70 hover:bg-black/5 no-underline"
-          >
-            Memberships
-          </a>
-
-          <button
-            class="mt-2 flex items-center gap-2 px-4 py-2.5 bg-black text-[#8dc707] rounded text-sm font-black cursor-pointer"
-          >
-            <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin Mode
-          </button>
-        </div>
-      </div>
     </header>
   </body>
 </template>
+
+<script>
+export default {
+  name: 'Navbar',
+  data() {
+    return {
+      pages: [
+        ['Home', 'home'],
+        ['Book a Court', 'courts'],
+        ['My Bookings', 'reservations'],
+        ['Memberships', 'subscriptions'],
+      ],
+      backgroundGreen: null,
+    }
+  },
+  methods: {
+    selectedPage() {
+      if (!this.backgroundGreen) {
+        this.backgroundGreen = 'bg-[#8dc707]'
+      } else {
+        this.backgroundGreen = ''
+      }
+    },
+  },
+}
+</script>
