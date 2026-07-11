@@ -184,32 +184,19 @@
           </p>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white rounded p-5 flex flex-col hover:shadow-md transition-shadow">
-            <div class="text-3xl mb-3">🎾</div>
-            <div class="font-black text-black text-base mb-1">Tennis Racket</div>
+          <div
+            v-for="eq in equipment"
+            class="bg-white rounded p-5 flex flex-col hover:shadow-md transition-shadow"
+          >
+            <div class="text-3xl mb-3">{{ eq.logo }}</div>
+            <div class="font-black text-black text-base mb-1">{{ eq.name }}</div>
             <p class="text-black/50 text-xs leading-relaxed mb-4 flex-1">
-              Premium Wilson or Babolat rackets available in various grip sizes and weights.
+              {{ eq.description }}
             </p>
             <div class="flex items-center justify-between pt-3 border-t border-black/[0.08]">
               <div>
-                <span class="font-black text-black text-lg">$5</span>
-                <span class="text-black/40 text-xs ml-1">/match</span>
-              </div>
-              <button class="text-xs font-bold text-black/50 hover:text-black transition-colors">
-                Add to booking →
-              </button>
-            </div>
-          </div>
-          <div class="bg-white rounded p-5 flex flex-col hover:shadow-md transition-shadow">
-            <div class="text-3xl mb-3">🟡</div>
-            <div class="font-black text-black text-base mb-1">Can of 4 Balls</div>
-            <p class="text-black/50 text-xs leading-relaxed mb-4 flex-1">
-              Pressurised premium tennis balls suitable for all court surfaces.
-            </p>
-            <div class="flex items-center justify-between pt-3 border-t border-black/[0.08]">
-              <div>
-                <span class="font-black text-black text-lg">$3</span>
-                <span class="text-black/40 text-xs ml-1">/can</span>
+                <span class="font-black text-black text-lg">{{ eq.cost }}</span>
+                <span class="text-black/40 text-xs ml-1">/{{ eq.metrics }}</span>
               </div>
               <button class="text-xs font-bold text-black/50 hover:text-black transition-colors">
                 Add to booking →
@@ -232,67 +219,14 @@
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div
+          v-for="service in services"
           class="group border border-black/10 rounded p-6 bg-white hover:border-[#8dc707] hover:shadow-md transition-all"
         >
-          <div
-            class="w-12 h-12 bg-[#8dc707]/15 rounded flex items-center justify-center text-[#5a8000] mb-4 group-hover:bg-[#8dc707] group-hover:text-black transition-colors"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="m6.5 6.5 11 11"></path>
-              <path d="m21 21-1-1"></path>
-              <path d="m3 3 1 1"></path>
-              <path d="m18.5 5.5 3 3-11 11-4-1-1-4Z"></path>
-            </svg>
-          </div>
-          <h3 class="font-black text-black text-base mb-1.5">Coaching & Lessons</h3>
-          <p class="text-black/50 text-sm leading-relaxed mb-3">
-            Private or group sessions with our certified ITF coaches. Available for all skill levels
-            — from complete beginner to competition prep.
-          </p>
-          <span class="text-xs font-bold text-[#8dc707] bg-[#8dc707]/10 px-2.5 py-1 rounded"
-            >From $45/hr</span
-          >
-        </div>
-
-        <div
-          class="group border border-black/10 rounded p-6 bg-white hover:border-[#8dc707] hover:shadow-md transition-all"
-        >
-          <div
-            class="w-12 h-12 bg-[#8dc707]/15 rounded flex items-center justify-center text-[#5a8000] mb-4 group-hover:bg-[#8dc707] group-hover:text-black transition-colors"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="6" cy="18" r="3"></circle>
-              <circle cx="18" cy="18" r="3"></circle>
-              <circle cx="12" cy="6" r="3"></circle>
-              <path d="M6 15V9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v6"></path>
-            </svg>
-          </div>
-          <h3 class="font-black text-black text-base mb-1.5">Ball Machine Sessions</h3>
-          <p class="text-black/50 text-sm leading-relaxed mb-3">
-            Solo practice with programmable Lobster machines. Set spin, speed, and oscillation to
-            drill any shot pattern.
-          </p>
-          <span class="text-xs font-bold text-[#8dc707] bg-[#8dc707]/10 px-2.5 py-1 rounded"
-            >$18/hr</span
-          >
+          <h3 class="font-black text-black text-base mb-1.5">{{ service.name }}</h3>
+          <p class="text-black/50 text-sm leading-relaxed mb-3">{{ service.description }}</p>
+          <span class="text-xs font-bold text-[#8dc707] bg-[#8dc707]/10 px-2.5 py-1 rounded">{{
+            service.cost
+          }}</span>
         </div>
       </div>
     </section>
@@ -311,13 +245,14 @@
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           <div
+            v-for="tic in tickets"
             class="rounded p-5 border-2 bg-white/5 border-white/10 hover:border-white/20 transition-colors"
           >
-            <div class="text-sm font-bold mb-1 text-white/50">Club Starter</div>
-            <div class="font-black text-white text-3xl mb-1">$49</div>
-            <div class="text-xs mb-4 text-white/40">4 bookings/mo</div>
+            <div class="text-sm font-bold mb-1 text-white/50">{{ tic.name }}</div>
+            <div class="font-black text-white text-3xl mb-1">{{ tic.cost }}</div>
+            <div class="text-xs mb-4 text-white/40">{{ tic.bookingsAmount }}</div>
             <div class="space-y-1.5">
-              <div class="flex items-start gap-2 text-xs">
+              <div v-for="feat in tic.features" class="flex items-start gap-2 text-xs">
                 <svg
                   width="11"
                   height="11"
@@ -329,26 +264,12 @@
                 >
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span class="text-white/50">7-day advanced booking</span>
-              </div>
-              <div class="flex items-start gap-2 text-xs">
-                <svg
-                  width="11"
-                  height="11"
-                  class="mt-0.5 shrink-0 text-[#8dc707]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="4"
-                >
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span class="text-white/50">Free locker room access</span>
+                <span class="text-white/50">{{ feat }}</span>
               </div>
             </div>
           </div>
 
-          <div class="rounded p-5 border-2 bg-[#8dc707] border-[#8dc707] transition-colors">
+          <!---<div class="rounded p-5 border-2 bg-[#8dc707] border-[#8dc707] transition-colors">
             <div class="text-[10px] font-black text-black/50 tracking-widest uppercase mb-2">
               Most Popular
             </div>
@@ -385,10 +306,11 @@
                 <span class="text-black/70">10% off equipment rentals</span>
               </div>
             </div>
-          </div>
+          </div>-->
         </div>
         <div class="text-center">
-          <button
+          <RouterLink
+            :to="{ name: 'subscriptions' }"
             class="inline-flex items-center gap-2 px-8 py-3.5 bg-[#8dc707] text-black font-black rounded hover:bg-[#9fd608] transition-colors"
           >
             View All Plans
@@ -405,7 +327,7 @@
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
-          </button>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -419,6 +341,7 @@
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div
+          v-for="rev in reviews"
           class="bg-white border border-black/10 rounded p-5 hover:border-[#8dc707]/50 transition-colors"
         >
           <div class="flex items-center gap-1 mb-3">
@@ -449,11 +372,11 @@
             </svg>
           </div>
           <p class="text-black/70 text-sm leading-relaxed mb-4">
-            "The grass courts are impeccable. Booking takes 30 seconds — I love the whole system."
+            {{ rev.text }}
           </p>
           <div>
-            <div class="font-bold text-black text-sm">Marcus L.</div>
-            <div class="text-black/40 text-xs">Court Wimbledon</div>
+            <div class="font-bold text-black text-sm">{{ rev.name }}</div>
+            <div class="text-black/40 text-xs">{{ rev.courtName }}</div>
           </div>
         </div>
       </div>
@@ -607,6 +530,58 @@ export default {
           features: ['Pro-Standard'],
           pricing: ['$45', '$55'],
           surface: 'Grass',
+        },
+      ],
+      equipment: [
+        {
+          name: 'Tennis Racket',
+          description:
+            'Premium Wilson or Babolat rackets available in various grip sizes and weights.',
+          cost: '$5',
+          metrics: 'match',
+          logo: '\u{1F3BE}',
+        },
+        {
+          name: 'Can of 4 Balls',
+          description: 'Pressurised premium tennis balls suitable for all court surfaces.',
+          cost: '$3',
+          metrics: 'can',
+          logo: '\u{1F94E}',
+        },
+      ],
+      services: [
+        {
+          name: 'Coaching & Lessons',
+          description:
+            'Private or group sessions with our certified ITF coaches. Available for all skill levels — from complete beginner to competition prep.',
+          cost: 'From $45/hr',
+        },
+        {
+          name: 'Ball Machine Sessions',
+          description:
+            'Solo practice with programmable Lobster machines. Set spin, speed, and oscillation to drill any shot pattern.',
+          cost: '$18/hr',
+        },
+      ],
+      tickets: [
+        {
+          name: 'Club Starter',
+          cost: '$49',
+          bookingsAmount: '4 bookings/mo',
+          features: ['7-day advanced booking', 'Free locker room access'],
+        },
+        {
+          name: 'Pro Player',
+          cost: '$99',
+          bookingsAmount: '10 bookings/mo',
+          features: ['14-day advanced booking', '10% off equipment rentals'],
+        },
+      ],
+      reviews: [
+        {
+          text: '"The grass courts are impeccable. Booking takes 30 seconds — I love the whole system."',
+          name: 'Marcus L.',
+          courtName: 'Court Wimbledon',
         },
       ],
     }
