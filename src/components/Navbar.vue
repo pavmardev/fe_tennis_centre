@@ -11,13 +11,13 @@
           </span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-0.5">
-          <div v-for="page in pages">
+        <nav class="hidden md:flex items-center gap-0.5" id="1">
+          <div v-for="(page, index) in pages">
             <RouterLink
               :to="{ name: page[1] }"
-              href="#"
+              :id="index"
               class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
-              @click="selectedPage"
+              @click="selectedPage(index)"
               :class="backgroundGreen"
             >
               {{ page[0] }}
@@ -26,16 +26,8 @@
         </nav>
 
         <div class="flex items-center gap-2">
-          <button
-            class="hidden sm:flex w-9 h-9 items-center justify-center rounded hover:bg-black/5 text-black/60 relative transition-colors cursor-pointer"
-          >
-            <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
-            <span
-              class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#8dc707] rounded-full border-2 border-white"
-            ></span>
-          </button>
-
-          <button
+          <RouterLink
+            :to="{ name: 'profile' }"
             class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded hover:bg-black/5 transition-colors cursor-pointer"
           >
             <div
@@ -44,7 +36,7 @@
               ML
             </div>
             <i data-lucide="chevron-down" class="w-[13px] h-[13px] text-black/40"></i>
-          </button>
+          </RouterLink>
 
           <button
             class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-[#8dc707] rounded text-xs font-black tracking-wide transition-opacity hover:opacity-80 cursor-pointer"
@@ -79,11 +71,12 @@ export default {
     }
   },
   methods: {
-    selectedPage() {
-      if (!this.backgroundGreen) {
-        this.backgroundGreen = 'bg-[#8dc707]'
-      } else {
-        this.backgroundGreen = ''
+    selectedPage(index) {
+      const anchors = Array.from(document.getElementById('1').getElementsByTagName('a'))
+      console.log(anchors)
+      const anch = anchors.find((a) => anchors[index])
+      if (anch) {
+        return 'bg-[#8dc707]'
       }
     },
   },

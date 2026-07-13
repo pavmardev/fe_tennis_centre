@@ -32,8 +32,6 @@
               </button>
             </div>
             <h2 class="font-black text-black mb-0.5">Marcus Lindqvist</h2>
-            <p class="text-black/40 text-xs mb-3">m.lindqvist@email.com</p>
-
             <div
               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#8dc707]/15 rounded text-xs font-bold text-[#5a8000]"
             >
@@ -59,32 +57,11 @@
           <div class="bg-white border border-black/10 rounded p-5">
             <h3 class="font-black text-black mb-4">Personal Details</h3>
             <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs text-black/40 mb-1 font-bold">First Name</label>
-                <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium">
-                  Marcus
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-black/40 mb-1 font-bold">Last Name</label>
-                <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium">
-                  Lindqvist
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-black/40 mb-1 font-bold">Phone</label>
-                <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium">
-                  +46 70 234 5678
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-black/40 mb-1 font-bold">Member Since</label>
-                <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium">
-                  March 2024
-                </div>
+              <div v-for="label in labelTitles">
+                <label class="block text-xs text-black/40 mb-1 font-bold">{{ label }}</label>
+                <div
+                  class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium"
+                ></div>
               </div>
             </div>
           </div>
@@ -118,3 +95,13 @@
     </div>
   </body>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      labelTitles: ['First Name', 'Last Name', 'Phone', 'Member Since', 'Email'],
+    }
+  },
+}
+</script>

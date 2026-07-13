@@ -5,6 +5,7 @@ import AdminView from '@/views/AdminView.vue'
 import CourtsView from '@/views/CourtsView.vue'
 import ReservationsView from '@/views/ReservationsView.vue'
 import SubscriptionsView from '@/views/SubscriptionsView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/subscriptions',
       name: 'subscriptions',
       component: SubscriptionsView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
     },
   ],
 })
