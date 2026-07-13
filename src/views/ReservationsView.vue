@@ -70,16 +70,18 @@
 
       <div class="flex items-center gap-2 mb-5 flex-wrap">
         <!---<button
-          class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors bg-[#8dc707] text-black"
+          class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors 
         >
           all
         </button>-->
         <button
-          @click="setCategory(category)"
-          v-for="category in bookingCategories"
-          class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors bg-white text-black/50 border border-black/12 hover:border-[#8dc707]/50"
+          @click="setCategory(c)"
+          :class="backgroundButton(c)"
+          :key="c"
+          v-for="c in bookingCategories"
+          class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors border border-black/10 hover:border-[#8dc707]/50"
         >
-          {{ category }}
+          {{ c }}
         </button>
       </div>
 
@@ -279,6 +281,13 @@ export default {
     },
     setCategory(cat) {
       this.category = cat
+    },
+    backgroundButton(cat) {
+      if (this.category == cat) {
+        return 'bg-[#8dc707] text-black'
+      } else {
+        return 'bg-white text-black/50'
+      }
     },
   },
   computed: {

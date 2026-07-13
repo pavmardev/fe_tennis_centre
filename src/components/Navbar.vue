@@ -15,10 +15,8 @@
           <div v-for="(page, index) in pages">
             <RouterLink
               :to="{ name: page[1] }"
-              :id="index"
               class="px-4 py-2 rounded text-sm font-medium transition-colors text-black/70 hover:bg-black/5 hover:text-black no-underline"
-              @click="selectedPage(index)"
-              :class="backgroundGreen"
+              :class="backgroundGreen(page[1])"
             >
               {{ page[0] }}
             </RouterLink>
@@ -67,17 +65,15 @@ export default {
         ['My Bookings', 'reservations'],
         ['Memberships', 'subscriptions'],
       ],
-      backgroundGreen: null,
+      page: '',
     }
   },
   methods: {
-    selectedPage(index) {
-      const anchors = Array.from(document.getElementById('1').getElementsByTagName('a'))
-      console.log(anchors)
-      const anch = anchors.find((a) => anchors[index])
-      if (anch) {
+    backgroundGreen(pg) {
+      if (this.$route && this.$route.name === pg) {
         return 'bg-[#8dc707]'
       }
+      return ''
     },
   },
 }
