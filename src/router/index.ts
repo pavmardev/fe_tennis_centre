@@ -6,6 +6,7 @@ import CourtsView from '@/views/CourtsView.vue'
 import ReservationsView from '@/views/ReservationsView.vue'
 import SubscriptionsView from '@/views/SubscriptionsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import BookDetailsView from '@/views/BookDetailsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,12 @@ const router = createRouter({
       path: '/reservations',
       name: 'reservations',
       component: ReservationsView,
+    },
+    {
+      path: '/book-details/:id',
+      name: 'book-details',
+      component: BookDetailsView,
+      props: true,
     },
     {
       path: '/subscriptions',

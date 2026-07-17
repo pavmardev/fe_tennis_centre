@@ -10,252 +10,19 @@
         </div>
         <div class="flex items-center gap-2 flex-wrap">
           <button
-            class="px-4 py-2 rounded text-xs font-bold capitalize transition-colors bg-[#8dc707] text-black"
+            v-for="cat in categories"
+            @click="setCategory(cat)"
+            class="px-4 py-2 rounded text-xs font-bold capitalize transition-colors"
+            :class="selectedCategory(cat)"
           >
-            all
-          </button>
-          <button
-            class="px-4 py-2 rounded text-xs font-bold capitalize transition-colors bg-white text-black/60 border border-black/[0.12] hover:border-[#8dc707]/50"
-          >
-            clay
-          </button>
-          <button
-            class="px-4 py-2 rounded text-xs font-bold capitalize transition-colors bg-white text-black/60 border border-black/[0.12] hover:border-[#8dc707]/50"
-          >
-            grass
-          </button>
-          <button
-            class="px-4 py-2 rounded text-xs font-bold capitalize transition-colors bg-white text-black/60 border border-black/[0.12] hover:border-[#8dc707]/50"
-          >
-            indoor
+            {{ cat }}
           </button>
         </div>
       </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div
-          class="group text-left bg-white border border-black/10 rounded overflow-hidden hover:border-[#8dc707] hover:shadow-lg transition-all cursor-pointer"
-        >
-          <div class="relative h-48 bg-black/10">
-            <div
-              class="w-full h-full bg-slate-700 flex items-center justify-center text-white/20 font-bold"
-            >
-              Court Image
-            </div>
-            <div class="absolute top-3 left-3">
-              <span
-                class="bg-amber-700 text-white text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded shadow"
-                >Clay</span
-              >
-            </div>
-          </div>
-          <div class="p-4">
-            <div class="flex items-start justify-between mb-1">
-              <h3 class="font-black text-black text-lg">Central Court 1</h3>
-              <div class="text-right shrink-0 ml-2">
-                <span class="font-black text-black">$30</span>
-                <span class="text-black/40 text-xs">/hr</span>
-              </div>
-            </div>
-            <p class="text-black/50 text-xs leading-relaxed mb-3">
-              Premium red clay court with excellent water drainage and professional lighting.
-            </p>
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-black/40">Evening: $40/hr</span>
-              <span
-                class="flex items-center gap-1 text-black font-bold group-hover:text-[#8dc707] transition-colors"
-              >
-                Select
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                >
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="group text-left bg-white border border-black/10 rounded overflow-hidden hover:border-[#8dc707] hover:shadow-lg transition-all cursor-pointer"
-        >
-          <div class="relative h-48 bg-black/10">
-            <div
-              class="w-full h-full bg-emerald-800 flex items-center justify-center text-white/20 font-bold"
-            >
-              Court Image
-            </div>
-            <div class="absolute top-3 left-3">
-              <span
-                class="bg-blue-600 text-white text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded shadow"
-                >Hardcourt</span
-              >
-            </div>
-          </div>
-          <div class="p-4">
-            <div class="flex items-start justify-between mb-1">
-              <h3 class="font-black text-black text-lg">Indoor Arena 2</h3>
-              <div class="text-right shrink-0 ml-2">
-                <span class="font-black text-black">$35</span>
-                <span class="text-black/40 text-xs">/hr</span>
-              </div>
-            </div>
-            <p class="text-black/50 text-xs leading-relaxed mb-3">
-              Climate-controlled indoor hardcourt perfect for consistent all-weather play.
-            </p>
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-black/40">Evening: $45/hr</span>
-              <span
-                class="flex items-center gap-1 text-black font-bold group-hover:text-[#8dc707] transition-colors"
-              >
-                Select
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                >
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CourtsListView :category="defaultCategory" />
     </section>
 
     <hr class="border-black/10 my-10 max-w-7xl mx-auto" />
-
-    <section class="max-w-2xl mx-auto px-4 mb-20">
-      <button
-        class="flex items-center gap-1.5 text-sm text-black/40 mb-6 hover:text-black transition-colors font-medium"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-        All Courts
-      </button>
-
-      <div class="flex items-center gap-4 mb-8">
-        <div class="w-16 h-16 rounded overflow-hidden bg-black/10 shrink-0">
-          <div
-            class="w-full h-full bg-slate-700 flex items-center justify-center text-white/10 text-xs font-bold"
-          >
-            Court
-          </div>
-        </div>
-        <div>
-          <h2 class="font-black text-black text-2xl">Central Court 1</h2>
-          <div class="flex items-center gap-2 mt-1">
-            <span
-              class="bg-amber-700 text-white text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded"
-              >Clay</span
-            >
-            <span class="text-black/40 text-xs">$30/hr · $40/hr eve.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="mb-6">
-        <label class="block text-sm font-bold text-black/60 mb-2">Select Date</label>
-        <input
-          type="date"
-          value="2026-06-23"
-          min="2026-06-23"
-          class="px-4 py-2.5 rounded border border-black/[0.15] bg-white text-black text-sm focus:outline-none focus:border-[#8dc707] focus:ring-2 focus:ring-[#8dc707]/20"
-        />
-      </div>
-
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="font-black text-black">Available Slots</h3>
-          <div class="flex items-center gap-3 text-xs text-black/40">
-            <span class="flex items-center gap-1"
-              ><span
-                class="w-2.5 h-2.5 rounded bg-black/5 border border-black/5 inline-block"
-              ></span
-              >Taken</span
-            >
-            <span class="flex items-center gap-1"
-              ><span class="w-2.5 h-2.5 rounded bg-white border border-black/20 inline-block"></span
-              >Free</span
-            >
-          </div>
-        </div>
-
-        <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
-          <button
-            disabled
-            class="py-2.5 rounded text-xs font-bold bg-black/5 text-black/25 cursor-not-allowed border border-transparent"
-          >
-            08:00
-          </button>
-          <button
-            disabled
-            class="py-2.5 rounded text-xs font-bold bg-black/5 text-black/25 cursor-not-allowed border border-transparent"
-          >
-            09:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-          >
-            10:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-          >
-            11:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-[#8dc707] text-black border border-[#8dc707]"
-          >
-            12:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-          >
-            13:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-          >
-            14:00
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/20 hover:border-[#8dc707]"
-          >
-            18:00
-            <div class="text-[9px] opacity-50 mt-0.5">eve</div>
-          </button>
-          <button
-            class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/20 hover:border-[#8dc707]"
-          >
-            19:00
-            <div class="text-[9px] opacity-50 mt-0.5">eve</div>
-          </button>
-        </div>
-      </div>
-
-      <button
-        class="w-full py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
-      >
-        Continue with 12:00 →
-      </button>
-    </section>
 
     <hr class="border-black/10 my-10 max-w-7xl mx-auto" />
 
@@ -424,3 +191,31 @@
     </section>
   </body>
 </template>
+
+<script>
+import CourtsListView from './CourtsListView.vue'
+export default {
+  name: 'CourtsView',
+  components: {
+    CourtsListView,
+  },
+  data() {
+    return {
+      categories: ['All', 'Clay', 'Grass', 'Indoor'],
+      defaultCategory: 'All',
+    }
+  },
+  methods: {
+    setCategory(cat) {
+      this.defaultCategory = cat
+    },
+    selectedCategory(cat) {
+      if (this.defaultCategory == cat) {
+        return 'text-black bg-[#8dc707]'
+      } else {
+        return 'bg-white text-black/60 border border-black/[0.12] hover:border-[#8dc707]/50'
+      }
+    },
+  },
+}
+</script>
