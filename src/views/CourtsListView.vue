@@ -56,6 +56,7 @@
           </div>
           <RouterLink
             :to="linkTo(court)"
+            @click="courtStore.setSelectedCourt(court)"
             class="flex items-center gap-1.5 px-4 py-2 bg-black text-[#8dc707] text-sm font-bold rounded hover:opacity-80 transition-opacity"
           >
             Reserve
@@ -76,6 +77,7 @@
   </div>
 </template>
 <script>
+import { useCourtStore } from '@/stores/court'
 export default {
   name: 'CourtsListView',
   props: {
@@ -106,6 +108,7 @@ export default {
           surface: 'Grass',
         },
       ],
+      courtStore: useCourtStore(),
     }
   },
   methods: {

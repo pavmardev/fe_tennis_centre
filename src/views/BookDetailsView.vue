@@ -1,6 +1,7 @@
 <template>
   <section class="max-w-2xl mx-auto px-4 mb-20">
-    <button
+    <RouterLink
+      :to="{ name: 'courts' }"
       class="flex items-center gap-1.5 text-sm text-black/40 mb-6 hover:text-black transition-colors font-medium"
     >
       <svg
@@ -14,8 +15,7 @@
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
       All Courts
-    </button>
-
+    </RouterLink>
     <div v-if="findCourt" class="flex items-center gap-4 mb-8">
       <div class="w-16 h-16 rounded overflow-hidden bg-black/10 shrink-0">
         <div
@@ -28,11 +28,11 @@
         <h2 class="font-black text-black text-2xl">{{ findCourt.name }}</h2>
         <div class="flex items-center gap-2 mt-1">
           <span
-            class="bg-black text-white text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded"
+            class="bg-[#8dc707] text-black text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded"
             >{{ findCourt.surface }}</span
           >
           <span class="text-black/40 text-xs"
-            >${{ findCourt.normalCost }}/hr · ${{ findCourt.eveningCost }}/hr eve.</span
+            >${{ findCourt.pricing[0] }}/hr · ${{ findCourt.pricing[1] }}/hr eve.</span
           >
         </div>
       </div>
@@ -41,6 +41,7 @@
     <div class="mb-6">
       <label class="block text-sm font-bold text-black/60 mb-2">Select Date</label>
       <input
+        v-model="date"
         type="date"
         value="2026-06-23"
         min="2026-06-23"
@@ -64,102 +65,70 @@
       </div>
 
       <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+        <!---
         <button
           disabled
           class="py-2.5 rounded text-xs font-bold bg-black/5 text-black/25 cursor-not-allowed border border-transparent"
         >
           08:00
-        </button>
+        </button>-->
         <button
-          disabled
-          class="py-2.5 rounded text-xs font-bold bg-black/5 text-black/25 cursor-not-allowed border border-transparent"
+          v-for="hour in bookHours"
+          @click="setBookHour(hour)"
+          :class="setBackgroundColor(hour)"
+          class="py-2.5 rounded text-xs font-bold border"
         >
-          09:00
+          {{ hour }}
         </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-        >
-          10:00
-        </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-        >
-          11:00
-        </button>
+        <!---
         <button
           class="py-2.5 rounded text-xs font-bold bg-[#8dc707] text-black border border-[#8dc707]"
         >
           12:00
-        </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-        >
-          13:00
-        </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/[0.12] hover:border-[#8dc707]"
-        >
-          14:00
-        </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/20 hover:border-[#8dc707]"
-        >
-          18:00
-          <div class="text-[9px] opacity-50 mt-0.5">eve</div>
-        </button>
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-white text-black border border-black/20 hover:border-[#8dc707]"
-        >
-          19:00
-          <div class="text-[9px] opacity-50 mt-0.5">eve</div>
-        </button>
+        </button>-->
       </div>
     </div>
 
     <button
+      v-if="hour"
       class="w-full py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
     >
-      Continue with 12:00 →
+      Continue with {{ isSetHour }} →
     </button>
   </section>
 </template>
 
 <script>
+import { useCourtStore } from '@/stores/court'
 export default {
   name: 'BookDetailsView',
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
   data() {
     return {
-      courtDetails: [
-        {
-          id: 1,
-          surface: 'Clay',
-          name: 'Central Court 1',
-          description:
-            'Premium red clay court with excellent water drainage and professional lighting.',
-          normalCost: 30,
-          eveningCost: 40,
-        },
-        {
-          id: 2,
-          surface: 'Indoor',
-          name: 'Indoor Arena 2',
-          description:
-            'Climate-controlled indoor hardcourt perfect for consistent all-weather play.',
-          normalCost: 35,
-          eveningCost: 45,
-        },
-      ],
+      date: '',
+      bookHours: ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00', '18:30', '20:00'],
+      hour: null,
     }
+  },
+  methods: {
+    setBookHour(h) {
+      this.hour = h
+    },
+    setBackgroundColor(h) {
+      if (this.hour == h) {
+        return 'bg-[#8dc707] text-black border-[#8dc707]'
+      } else {
+        return 'bg-white text-black border-black/[0.12] hover:border-[#8dc707]'
+      }
+    },
   },
   computed: {
     findCourt() {
-      return this.courtDetails.find((c) => c.id.toString() == this.id)
+      return useCourtStore().selectedCourt
+    },
+    isSetHour() {
+      if (this.hour) {
+        return this.hour
+      }
     },
   },
 }
