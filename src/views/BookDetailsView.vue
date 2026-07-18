@@ -89,12 +89,14 @@
       </div>
     </div>
 
-    <button
-      v-if="hour"
-      class="w-full py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
+    <RouterLink
+      :to="{ name: 'book-confirmation' }"
+      v-if="hour && date"
+      @click="setHourAndDate()"
+      class="block w-full text-center py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
     >
       Continue with {{ isSetHour }} →
-    </button>
+    </RouterLink>
   </section>
 </template>
 
@@ -104,7 +106,7 @@ export default {
   name: 'BookDetailsView',
   data() {
     return {
-      date: '',
+      date: null,
       bookHours: ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00', '18:30', '20:00'],
       hour: null,
     }
@@ -120,6 +122,9 @@ export default {
         return 'bg-white text-black border-black/[0.12] hover:border-[#8dc707]'
       }
     },
+    setHourAndDate() {
+      useCourtStore().setSelectedDateAndTime(this.isSetHour, this.isSetDate)
+    },
   },
   computed: {
     findCourt() {
@@ -128,6 +133,11 @@ export default {
     isSetHour() {
       if (this.hour) {
         return this.hour
+      }
+    },
+    isSetDate() {
+      if (this.date) {
+        return this.date
       }
     },
   },

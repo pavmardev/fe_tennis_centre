@@ -7,6 +7,7 @@ import ReservationsView from '@/views/ReservationsView.vue'
 import SubscriptionsView from '@/views/SubscriptionsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import BookDetailsView from '@/views/BookDetailsView.vue'
+import BookConfirmation from '@/views/BookConfirmation.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +37,11 @@ const router = createRouter({
       name: 'book-details',
       component: BookDetailsView,
       props: true,
+    },
+    {
+      path: '/book-confirmation',
+      name: 'book-confirmation',
+      component: BookConfirmation,
     },
     {
       path: '/subscriptions',
