@@ -46,11 +46,11 @@
         <div class="flex items-center justify-between mt-4 pt-4 border-t border-black/[0.08]">
           <div class="flex items-baseline gap-3">
             <div>
-              <span class="font-black text-black text-xl">{{ court.pricing[0] }}</span>
+              <span class="font-black text-black text-xl">${{ court.pricing[0] }}</span>
               <span class="text-black/40 text-xs ml-1">day/hr</span>
             </div>
             <div>
-              <span class="font-bold text-black/60 text-sm">{{ court.pricing[1] }}</span>
+              <span class="font-bold text-black/60 text-sm">${{ court.pricing[1] }}</span>
               <span class="text-black/40 text-xs ml-1">eve/hr</span>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default {
           description:
             'Premium red clay court with excellent water drainage and professional lighting.',
           features: ['Floodlights', 'Umpire Chair'],
-          pricing: ['$30', '$40'],
+          pricing: [30, 40],
           surface: 'Clay',
         },
         {
@@ -104,7 +104,7 @@ export default {
           description:
             'Authentic tournament grass surface offering low bounce and fast-paced rallies.',
           features: ['Pro-Standard'],
-          pricing: ['$45', '$55'],
+          pricing: [45, 55],
           surface: 'Grass',
         },
       ],

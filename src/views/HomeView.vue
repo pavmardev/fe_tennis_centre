@@ -121,7 +121,7 @@
             </p>
             <div class="flex items-center justify-between pt-3 border-t border-black/[0.08]">
               <div>
-                <span class="font-black text-black text-lg">{{ eq.cost }}</span>
+                <span class="font-black text-black text-lg">${{ eq.cost }}</span>
                 <span class="text-black/40 text-xs ml-1">/{{ eq.metrics }}</span>
               </div>
               <button class="text-xs font-bold text-black/50 hover:text-black transition-colors">
@@ -418,6 +418,7 @@
 </template>
 
 <script>
+import { useCourtStore } from '@/stores/court.ts'
 import CourtsListView from './CourtsListView.vue'
 export default {
   name: 'HomeView',
@@ -444,23 +445,7 @@ export default {
           secondLevelHeading: 'Clay · Grass · Indoor',
         },
       ],
-      equipment: [
-        {
-          name: 'Tennis Racket',
-          description:
-            'Premium Wilson or Babolat rackets available in various grip sizes and weights.',
-          cost: '$5',
-          metrics: 'match',
-          logo: '\u{1F3BE}',
-        },
-        {
-          name: 'Can of 4 Balls',
-          description: 'Pressurised premium tennis balls suitable for all court surfaces.',
-          cost: '$3',
-          metrics: 'can',
-          logo: '\u{1F94E}',
-        },
-      ],
+
       services: [
         {
           name: 'Coaching & Lessons',
@@ -497,6 +482,11 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    equipment() {
+      return useCourtStore().equipment
+    },
   },
 }
 </script>
