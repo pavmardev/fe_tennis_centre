@@ -13,7 +13,9 @@ export default {
 
 <template>
   <Navbar />
-  <RouterView />
+  <body class="bg-gray-50 text-black antialiased">
+    <RouterView />
+  </body>
   <Footer />
 </template>
 

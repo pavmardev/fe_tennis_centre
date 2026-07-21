@@ -8,6 +8,7 @@ import SubscriptionsView from '@/views/SubscriptionsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import BookDetailsView from '@/views/BookDetailsView.vue'
 import BookConfirmation from '@/views/BookConfirmation.vue'
+import LoginRegisterView from '@/views/Login&RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,16 @@ const router = createRouter({
       path: '/subscriptions',
       name: 'subscriptions',
       component: SubscriptionsView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginRegisterView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: LoginRegisterView,
     },
     {
       path: '/profile',
