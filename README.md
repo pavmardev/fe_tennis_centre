@@ -1,48 +1,71 @@
-# vue-project
+# 🎾 TennisReserve – Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+A modern Single Page Application (SPA) for online tennis court reservations. This repository contains the frontend client built with **Vue.js 3** using the **Options API** paradigm. This is only fictional reservation system for personal needs and improving software engineering/coding skills.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Features
+Finished application will offer:
+- registration and login
+- stateless authentification and authorization
+- managing your personal account
+- booking tennis courts with equipment if needed
+- fictionaly purchasing membership which will allow user make booking
+- caching for improved app performance
 
-## Recommended Browser Setup
+## 🛠 Tech Stack
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+* **Vue 3 Options API
+* **Vite
+* **Vue router
+* **Pinia
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 📋 Prerequisites
 
-## Customize configuration
+Before running this application, ensure you have the installed Node.js on your machine
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 🚀 Getting Started
 
-```sh
+Follow these steps to set up and run the project locally.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/pavmardev/fe_tennis_centre.git
+cd fe_tennis_centre
+```
+
+### 2. Install Dependencies
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 3. Run Development Server
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Once the server starts, open your browser and navigate to `http://localhost:5173`.
 
-```sh
+### 4. Build for Production
+
+To create an optimized production build:
+
+```bash
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+The compiled files will be output to the `dist/` folder, ready to be deployed.
 
-```sh
-npm run lint
-```
+---
+
+
+## 📝 Authors
+
+Pavol Marko
