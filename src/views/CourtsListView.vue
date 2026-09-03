@@ -9,7 +9,7 @@
         <div
           class="w-full h-full bg-white flex items-center justify-center text-white/20 font-bold"
         >
-          Court Image
+          court image
         </div>
         <div class="absolute top-3 left-3">
           <span
@@ -39,19 +39,15 @@
               >
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
-              {{ feature }}
+              {{ feature.description }}
             </span>
           </div>
         </div>
         <div class="flex items-center justify-between mt-4 pt-4 border-t border-black/[0.08]">
           <div class="flex items-baseline gap-3">
             <div>
-              <span class="font-black text-black text-xl">${{ court.pricing[0] }}</span>
+              <span class="font-black text-black text-xl">${{ court.price }}</span>
               <span class="text-black/40 text-xs ml-1">day/hr</span>
-            </div>
-            <div>
-              <span class="font-bold text-black/60 text-sm">${{ court.pricing[1] }}</span>
-              <span class="text-black/40 text-xs ml-1">eve/hr</span>
             </div>
           </div>
           <RouterLink
@@ -78,6 +74,7 @@
   </div>
 </template>
 <script>
+import api from '../api/axios'
 import { useCourtStore } from '@/stores/court'
 export default {
   name: 'CourtsListView',
@@ -89,26 +86,9 @@ export default {
   },
   data() {
     return {
-      courts: [
-        {
-          id: 1,
-          name: 'Court Roland',
-          description:
-            'Premium red clay court with excellent water drainage and professional lighting.',
-          features: ['Floodlights', 'Umpire Chair'],
-          pricing: [30, 40],
-          surface: 'Clay',
-        },
-        {
-          id: 2,
-          name: 'Court Wimbledon',
-          description:
-            'Authentic tournament grass surface offering low bounce and fast-paced rallies.',
-          features: ['Pro-Standard'],
-          pricing: [45, 55],
-          surface: 'Grass',
-        },
-      ],
+      loading: false,
+      error: null,
+      courts: null,
       courtStore: useCourtStore(),
     }
   },
@@ -128,6 +108,7 @@ export default {
   },
   computed: {
     isCategorySet() {
+      if (!this.courts) return
       if (this.category) {
         return this.filterByCategory
       } else {
@@ -138,9 +119,20 @@ export default {
       if (this.category == 'All') {
         return this.courts
       } else {
-        return this.courts.filter((c) => c.surface == this.category)
+        return this.courts.filter((c) => c.surface?.toLowerCase() === this.category?.toLowerCase())
       }
     },
+  },
+  async created() {
+    this.loading = true
+    try {
+      const response = await api.get('/courts')
+      this.courts = response.data.data
+    } catch (error) {
+      this.error = error.response?.data?.message
+    } finally {
+      this.loading = false
+    }
   },
 }
 </script>

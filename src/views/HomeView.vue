@@ -111,19 +111,17 @@
           v-for="eq in equipment"
           class="bg-white rounded p-5 flex flex-col hover:shadow-md transition-shadow"
         >
-          <div class="text-3xl mb-3">{{ eq.logo }}</div>
+          <div class="text-3xl mb-3">
+            {{ eq?.unicode ? String.fromCodePoint(parseInt(eq.unicode.split('{')[1], 16)) : '' }}
+          </div>
           <div class="font-black text-black text-base mb-1">{{ eq.name }}</div>
           <p class="text-black/50 text-xs leading-relaxed mb-4 flex-1">
             {{ eq.description }}
           </p>
           <div class="flex items-center justify-between pt-3 border-t border-black/[0.08]">
             <div>
-              <span class="font-black text-black text-lg">${{ eq.cost }}</span>
-              <span class="text-black/40 text-xs ml-1">/{{ eq.metrics }}</span>
+              <span class="font-black text-black text-lg">${{ eq.price }}</span>
             </div>
-            <button class="text-xs font-bold text-black/50 hover:text-black transition-colors">
-              Add to booking →
-            </button>
           </div>
         </div>
       </div>
@@ -141,13 +139,10 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
       <div
         v-for="service in services"
-        class="group border border-black/10 rounded p-6 bg-white hover:border-[#8dc707] hover:shadow-md transition-all"
+        class="group border border-black/30 rounded p-6 bg-white hover:border-[#8dc707] hover:shadow-md transition-all"
       >
-        <h3 class="font-black text-black text-base mb-1.5">{{ service.name }}</h3>
-        <p class="text-black/50 text-sm leading-relaxed mb-3">{{ service.description }}</p>
-        <span class="text-xs font-bold text-[#8dc707] bg-[#8dc707]/10 px-2.5 py-1 rounded">{{
-          service.cost
-        }}</span>
+        <h3 class="font-black text-[#8dc707] text-base mb-1.5">{{ service.name }}</h3>
+        <p class="text-black/80 text-sm leading-relaxed mb-3">{{ service.description }}</p>
       </div>
     </div>
   </section>
@@ -170,8 +165,7 @@
           class="rounded p-5 border-2 bg-white/5 border-white/10 hover:border-white/20 transition-colors"
         >
           <div class="text-sm font-bold mb-1 text-white/50">{{ tic.name }}</div>
-          <div class="font-black text-white text-3xl mb-1">{{ tic.cost }}</div>
-          <div class="text-xs mb-4 text-white/40">{{ tic.bookingsAmount }}</div>
+          <div class="font-black text-white text-3xl mb-1">${{ tic.cost }}</div>
           <div class="space-y-1.5">
             <div v-for="feat in tic.features" class="flex items-start gap-2 text-xs">
               <svg
@@ -185,7 +179,7 @@
               >
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
-              <span class="text-white/50">{{ feat }}</span>
+              <span class="text-white/50">{{ feat.description }}</span>
             </div>
           </div>
         </div>
@@ -234,7 +228,7 @@
           :to="{ name: 'subscriptions' }"
           class="inline-flex items-center gap-2 px-8 py-3.5 bg-[#8dc707] text-black font-black rounded hover:bg-[#9fd608] transition-colors"
         >
-          View All Plans
+          View All Details
           <svg
             width="16"
             height="16"
@@ -249,54 +243,6 @@
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </RouterLink>
-      </div>
-    </div>
-  </section>
-
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-20">
-    <div class="mb-10">
-      <span class="text-[#8dc707] font-bold text-xs tracking-widest uppercase">Member Reviews</span>
-      <h2 class="font-black text-black text-3xl sm:text-4xl mt-1">What members say</h2>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div
-        v-for="rev in reviews"
-        class="bg-white border border-black/10 rounded p-5 hover:border-[#8dc707]/50 transition-colors"
-      >
-        <div class="flex items-center gap-1 mb-3">
-          <svg width="13" height="13" class="fill-[#8dc707] text-[#8dc707]" viewBox="0 0 24 24">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon>
-          </svg>
-          <svg width="13" height="13" class="fill-[#8dc707] text-[#8dc707]" viewBox="0 0 24 24">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon>
-          </svg>
-          <svg width="13" height="13" class="fill-[#8dc707] text-[#8dc707]" viewBox="0 0 24 24">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon>
-          </svg>
-          <svg width="13" height="13" class="fill-[#8dc707] text-[#8dc707]" viewBox="0 0 24 24">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon>
-          </svg>
-          <svg width="13" height="13" class="fill-[#8dc707] text-[#8dc707]" viewBox="0 0 24 24">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon>
-          </svg>
-        </div>
-        <p class="text-black/70 text-sm leading-relaxed mb-4">
-          {{ rev.text }}
-        </p>
-        <div>
-          <div class="font-bold text-black text-sm">{{ rev.name }}</div>
-          <div class="text-black/40 text-xs">{{ rev.courtName }}</div>
-        </div>
       </div>
     </div>
   </section>
@@ -410,6 +356,7 @@
 </template>
 
 <script>
+import api from '../api/axios'
 import { useCourtStore } from '@/stores/court.ts'
 import CourtsListView from './CourtsListView.vue'
 export default {
@@ -419,6 +366,8 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      error: null,
       heroSectionDiv: [
         {
           mainHeading: 5,
@@ -443,29 +392,39 @@ export default {
           name: 'Coaching & Lessons',
           description:
             'Private or group sessions with our certified ITF coaches. Available for all skill levels — from complete beginner to competition prep.',
-          cost: 'From $45/hr',
         },
         {
           name: 'Ball Machine Sessions',
           description:
             'Solo practice with programmable Lobster machines. Set spin, speed, and oscillation to drill any shot pattern.',
-          cost: '$18/hr',
-        },
-      ],
-      tickets: [
-        {
-          name: 'Club Starter',
-          cost: '$49',
-          bookingsAmount: '4 bookings/mo',
-          features: ['7-day advanced booking', 'Free locker room access'],
         },
         {
-          name: 'Pro Player',
-          cost: '$99',
-          bookingsAmount: '10 bookings/mo',
-          features: ['14-day advanced booking', '10% off equipment rentals'],
+          name: 'Free Parking',
+          description:
+            'Dedicated car park with 20 spaces directly adjacent to the courts. EV charging stations available on request.',
+        },
+        {
+          name: 'Free Wi-Fi',
+          description:
+            'High-speed Wi-Fi across the entire club — courts, clubhouse, and locker rooms. Password at reception.',
+        },
+        {
+          name: 'Locker Rooms & Showers',
+          description:
+            'Private, spotless locker rooms with hot showers, hairdryers, and secure lockers. Towels available on request.',
+        },
+        {
+          name: 'Tournament Hosting',
+          description:
+            'Host your corporate tournament, club championship, or charity match. Dedicated event coordinator provided.',
+        },
+        {
+          name: 'Equipment Rental',
+          description:
+            'Rackets, balls, ball machines, recording devices — everything you need for a complete session, available at the front desk.',
         },
       ],
+      tickets: null,
       reviews: [
         {
           text: '"The grass courts are impeccable. Booking takes 30 seconds — I love the whole system."',
@@ -473,12 +432,35 @@ export default {
           courtName: 'Court Wimbledon',
         },
       ],
+      equipment: null,
     }
   },
-  computed: {
-    equipment() {
-      return useCourtStore().equipment
-    },
-  },
+  async created() {
+    this.loading = true
+    try {
+      const [response1, response2] = await Promise.all([
+        api.get('/equipment'),
+        api.get('/memberships'),
+      ])
+      this.equipment = response1.data.data.slice(0, 4)
+      this.tickets = response2.data.data
+    } catch (error) {
+      this.error = error
+      console.log(this.error)
+    } finally {
+      this.loading = false
+    }
+  } /*
+  async created() {
+    this.loading = true
+    try {
+      const response = await api.get('/equipment')
+      this.equipment = response.data.data
+    } catch (err) {
+      this.error = err
+    } finally {
+      this.loading = false
+    }
+  },*/,
 }
 </script>
