@@ -135,7 +135,7 @@
             :disabled="isLoading"
             class="w-full mt-2 px-4 py-3 bg-black text-[#8dc707] text-sm font-bold rounded hover:opacity-90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span v-if="!isLoading">Prihlásiť sa</span>
+            <span v-if="!isLoading" @click="handleLogin()">Prihlásiť sa</span>
             <span v-else class="flex items-center gap-2">
               <svg
                 class="animate-spin h-4 w-4 text-[#8dc707]"
@@ -185,6 +185,9 @@
 </template>
 
 <script>
+import api from '../api/axios'
+import { useAuthStore } from '@/stores/auth'
+import { mapStores } from 'pinia'
 export default {
   name: 'LoginView',
   data() {
@@ -196,8 +199,11 @@ export default {
       },
       showPassword: false,
       isLoading: false,
-      errorMessage: '',
+      errorMessage: null,
     }
+  },
+  computed: {
+    ...mapStores(useAuthStore),
   },
   methods: {
     async handleLogin() {
@@ -205,8 +211,12 @@ export default {
       this.errorMessage = ''
 
       try {
+        await this.authStore.login(this.form.email, this.form.password)
+        await this.authStore.fetchMe()
+        this.$router.push('/')
       } catch (error) {
-        this.errorMessage = 'Nespravny e-mail alebo heslo.'
+        this.errorMessage = error
+        console.log(this.errorMessage)
       } finally {
         this.isLoading = false
       }

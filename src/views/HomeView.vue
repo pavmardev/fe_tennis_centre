@@ -439,10 +439,10 @@ export default {
     this.loading = true
     try {
       const [response1, response2] = await Promise.all([
-        api.get('/equipment'),
+        api.get('/equipment/random'),
         api.get('/memberships'),
       ])
-      this.equipment = response1.data.data.slice(0, 4)
+      this.equipment = response1.data.data
       this.tickets = response2.data.data
     } catch (error) {
       this.error = error
@@ -450,17 +450,6 @@ export default {
     } finally {
       this.loading = false
     }
-  } /*
-  async created() {
-    this.loading = true
-    try {
-      const response = await api.get('/equipment')
-      this.equipment = response.data.data
-    } catch (err) {
-      this.error = err
-    } finally {
-      this.loading = false
-    }
-  },*/,
+  },
 }
 </script>

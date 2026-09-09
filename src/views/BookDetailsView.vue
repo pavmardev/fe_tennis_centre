@@ -16,25 +16,40 @@
       </svg>
       All Courts
     </RouterLink>
-    <div v-if="findCourt" class="flex items-center gap-4 mb-8">
-      <div class="w-16 h-16 rounded overflow-hidden bg-black/10 shrink-0">
-        <div
-          class="w-full h-full bg-slate-700 flex items-center justify-center text-white/10 text-xs font-bold"
-        >
-          Court
+    <div v-if="selectedCourt" class="flex flex-col gap-6 mb-8">
+      <!-- Hlavička kurtu -->
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded overflow-hidden bg-black/10 shrink-0">
+          <div
+            class="w-full h-full bg-slate-700 flex items-center justify-center text-white/10 text-xs font-bold"
+          >
+            Court
+          </div>
+        </div>
+        <div>
+          <h2 class="font-black text-black text-2xl">{{ selectedCourt.name }}</h2>
+          <div class="flex items-center gap-2 mt-1">
+            <span
+              class="bg-[#8dc707] text-black text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded"
+              >{{ selectedCourt.surface }}</span
+            >
+            <span class="text-black/40 text-xs">${{ selectedCourt.price }}/hr</span>
+          </div>
         </div>
       </div>
-      <div>
-        <h2 class="font-black text-black text-2xl">{{ findCourt.name }}</h2>
-        <div class="flex items-center gap-2 mt-1">
-          <span
-            class="bg-[#8dc707] text-black text-[9px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded"
-            >{{ findCourt.surface }}</span
-          >
-          <span class="text-black/40 text-xs"
-            >${{ findCourt.pricing[0] }}/hr · ${{ findCourt.pricing[1] }}/hr eve.</span
-          >
-        </div>
+
+      <p v-if="selectedCourt.description" class="text-black/70 text-sm leading-relaxed">
+        {{ selectedCourt.description }}
+      </p>
+
+      <div v-if="selectedCourt.features?.length" class="flex flex-wrap gap-2">
+        <span
+          v-for="(feature, index) in selectedCourt.features"
+          :key="index"
+          class="bg-black/5 text-black/70 text-xs font-bold px-2.5 py-1 rounded"
+        >
+          {{ feature.description }}
+        </span>
       </div>
     </div>
 
@@ -42,6 +57,7 @@
       <label class="block text-sm font-bold text-black/60 mb-2">Select Date</label>
       <input
         v-model="date"
+        :min="minDate"
         type="date"
         value="2026-06-23"
         min="2026-06-23"
@@ -49,43 +65,21 @@
       />
     </div>
 
-    <div class="mb-6">
+    <div class="mb-6" v-if="date">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-black text-black">Available Slots</h3>
-        <div class="flex items-center gap-3 text-xs text-black/40">
-          <span class="flex items-center gap-1"
-            ><span class="w-2.5 h-2.5 rounded bg-black/5 border border-black/5 inline-block"></span
-            >Taken</span
-          >
-          <span class="flex items-center gap-1"
-            ><span class="w-2.5 h-2.5 rounded bg-white border border-black/20 inline-block"></span
-            >Free</span
-          >
-        </div>
       </div>
 
       <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
-        <!---
         <button
-          disabled
-          class="py-2.5 rounded text-xs font-bold bg-black/5 text-black/25 cursor-not-allowed border border-transparent"
-        >
-          08:00
-        </button>-->
-        <button
-          v-for="hour in bookHours"
+          v-for="hour in availableTimeSlots"
+          :key="hour.id"
           @click="setBookHour(hour)"
           :class="setBackgroundColor(hour)"
           class="py-2.5 rounded text-xs font-bold border"
         >
-          {{ hour }}
+          {{ hour.time_slot }}
         </button>
-        <!---
-        <button
-          class="py-2.5 rounded text-xs font-bold bg-[#8dc707] text-black border border-[#8dc707]"
-        >
-          12:00
-        </button>-->
       </div>
     </div>
 
@@ -95,21 +89,36 @@
       @click="setHourAndDate()"
       class="block w-full text-center py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
     >
-      Continue with {{ isSetHour }} →
+      Continue with {{ isSetHour.time_slot }} →
     </RouterLink>
   </section>
 </template>
 
 <script>
+import api from '../api/axios'
 import { useCourtStore } from '@/stores/court'
 export default {
   name: 'BookDetailsView',
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
+      loading: false,
+      error: null,
       date: null,
-      bookHours: ['08:00', '09:30', '11:00', '12:30', '14:00', '15:30', '17:00', '18:30', '20:00'],
       hour: null,
+      selectedCourt: null,
+      timeSlots: null,
     }
+  },
+  watch: {
+    date(newValue, oldValue) {
+      this.getAvailableTimeSlots(newValue)
+    },
   },
   methods: {
     setBookHour(h) {
@@ -125,21 +134,55 @@ export default {
     setHourAndDate() {
       useCourtStore().setSelectedDateAndTime(this.isSetHour, this.isSetDate)
     },
+    async getAvailableTimeSlots(date) {
+      this.loading = true
+      try {
+        const response = await api.post(`/courts/${this.id}/available-time-slots`, {
+          reservation_date: this.date,
+        })
+        this.timeSlots = response.data.data
+      } catch (err) {
+        this.error = err
+        console.log(err)
+      } finally {
+        this.loading = false
+      }
+    },
   },
   computed: {
-    findCourt() {
-      return useCourtStore().selectedCourt
-    },
     isSetHour() {
       if (this.hour) {
         return this.hour
       }
+    },
+    availableTimeSlots() {
+      return this.timeSlots
     },
     isSetDate() {
       if (this.date) {
         return this.date
       }
     },
+    minDate() {
+      return new Date().toISOString().split('T')[0]
+    },
+  },
+
+  async created() {
+    this.loading = true
+    try {
+      const [response1, response2] = await Promise.all([
+        api.get(`/courts/${this.id}`),
+        api.get('/time-slots'),
+      ])
+      this.selectedCourt = response1.data.data
+      this.timeSlots = response2.data.data
+    } catch (err) {
+      this.error = err
+      console.log(this.error)
+    } finally {
+      this.loading = false
+    }
   },
 }
 </script>
