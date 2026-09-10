@@ -48,24 +48,32 @@
       </div>
     </div>
 
-    <div class="bg-white border border-black/10 rounded p-5 mb-4 shadow-sm">
+    <div
+      v-if="equip && equip.length"
+      class="bg-white border border-black/10 rounded p-5 mb-4 shadow-sm"
+    >
       <h4 class="font-black text-black mb-3">Add Equipment Rental</h4>
       <div class="space-y-2">
         <button
-          v-for="eq in equipment"
+          v-for="eq in equip"
+          :key="eq.id"
           @click="setEquipment(eq)"
           :class="background(eq.id)"
           class="w-full flex items-center justify-between p-3 rounded border-2 border-black/[0.08] hover:border-[#8dc707]/50 transition-colors"
         >
           <div class="flex items-center gap-2.5">
-            <span class="text-xl">{{ eq.logo }}</span>
+            <span class="text-xl">{{
+              eq?.unicode ? String.fromCodePoint(parseInt(eq.unicode.split('{')[1], 16)) : ''
+            }}</span>
             <div class="text-left">
               <div class="text-sm font-bold text-black">{{ eq.name }}</div>
-              <div class="text-xs text-black/40">${{ eq.cost }}/{{ eq.metrics }}</div>
+              <div class="text-xs text-black/40">${{ eq.price }}</div>
             </div>
           </div>
+
+          <!-- Ikonka fajočky sa zobrazí IBA ak je eq.id v poli selectedEquip -->
           <div
-            v-show="equip.some((e) => e.id == eq.id)"
+            v-show="selectedEquip.some((e) => e.id === eq.id)"
             class="w-5 h-5 rounded border-2 border-black/[0.5] bg-[#8dc707] flex items-center justify-center"
           >
             <svg
@@ -86,11 +94,15 @@
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
           <span class="text-black/50">Court</span>
-          <span class="font-bold text-black">${{ isEvening }}</span>
+          <span class="font-bold text-black">${{ courtDetails.price }}</span>
         </div>
-        <div v-if="orderedEquipment" v-for="orEq in equip" class="flex justify-between">
-          <span class="text-black/50">{{ orEq.name }}</span>
-          <span class="font-bold text-black">${{ orEq.cost }}</span>
+        <div
+          v-if="orderedEquipment"
+          v-for="orderedEq in selectedEquip"
+          class="flex justify-between"
+        >
+          <span class="text-black/50">{{ orderedEq.name }}</span>
+          <span class="font-bold text-black">${{ orderedEq.price }}</span>
         </div>
         <div
           class="border-t border-black/[0.08] pt-2 mt-2 flex justify-between font-black text-black text-base"
@@ -101,7 +113,8 @@
     </div>
 
     <button
-      class="w-full py-3.5 bg-[#8dc707] text-black font-black rounded hover:bg-[#9fd608] transition-colors shadow-sm"
+      @click=""
+      class="w-full py-3.5 bg-[#8dc707] text-black font-black rounded hover:bg-[#9fd608] transition-colors shadow-sm cursor-pointer"
     >
       Confirm & Pay ${{ countTotalCost }}
     </button>
@@ -110,62 +123,69 @@
 </template>
 
 <script>
+import api from '../api/axios'
 import { useCourtStore } from '@/stores/court'
 export default {
   name: 'BookConfirmation',
   data() {
     return {
       equip: [],
+      selectedEquip: [],
+      loading: false,
+      error: null,
     }
   },
   methods: {
     setEquipment(eq) {
-      if (this.equip.some((e) => e.id == eq.id)) {
-        this.equip = this.equip.filter((item) => item.id !== eq.id)
+      if (this.selectedEquip.some((e) => e.id === eq.id)) {
+        this.selectedEquip = this.selectedEquip.filter((item) => item.id !== eq.id)
       } else {
-        this.equip.push(eq)
+        this.selectedEquip.push(eq)
       }
     },
+
     background(eqID) {
-      if (this.equip.some((e) => e.id == eqID)) {
+      if (this.selectedEquip.some((e) => e.id === eqID)) {
         return 'bg-[#8dc707]'
       } else {
         return 'bg-white'
       }
     },
+    setTotalPrice() {
+      useCourtStore().seTotalCost(this.countTotalCost)
+    },
+  },
+  async created() {
+    this.loading = true
+    try {
+      const response = await api.get('/equipment')
+      this.equip = response.data.data
+    } catch (err) {
+      this.error = err
+    } finally {
+      this.loading = false
+      console.log(this.equip)
+    }
   },
   computed: {
-    hourString() {
-      const store = parseInt(useCourtStore().hour.slice(0, 2))
-      return store
-    },
     courtDetails() {
+      console.log(useCourtStore().selectedCourt)
       return useCourtStore().selectedCourt
     },
     bookDetails() {
       return [useCourtStore().date, useCourtStore().hour]
     },
-    isEvening() {
-      if (this.hourString >= 14) {
-        return this.courtDetails.pricing[1]
-      } else {
-        return this.courtDetails.pricing[0]
-      }
-    },
-    equipment() {
-      return useCourtStore().equipment
-    },
     orderedEquipment() {
-      if (this.equip.length > 0) {
-        return this.equip
+      if (this.selectedEquip.length > 0) {
+        return this.selectedEquip
       }
     },
     countTotalCost() {
       let totalCost = 0
-      for (let i = 0; i < this.equip.length; i++) {
-        totalCost += this.equip[i].cost
+      for (let i = 0; i < this.selectedEquip.length; i++) {
+        totalCost += this.selectedEquip[i].price
       }
-      return this.isEvening + totalCost
+      return this.courtDetails.price + totalCost
     },
   },
 }

@@ -74,7 +74,7 @@
         <button
           v-for="hour in availableTimeSlots"
           :key="hour.id"
-          @click="setBookHour(hour)"
+          @click="setBookHour(hour.time_slot)"
           :class="setBackgroundColor(hour)"
           class="py-2.5 rounded text-xs font-bold border"
         >
@@ -86,10 +86,10 @@
     <RouterLink
       :to="{ name: 'book-confirmation' }"
       v-if="hour && date"
-      @click="setHourAndDate()"
+      @click="(setHourAndDate(), courtSelection())"
       class="block w-full text-center py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
     >
-      Continue with {{ isSetHour.time_slot }} →
+      Continue with {{ isSetHour }} →
     </RouterLink>
   </section>
 </template>
@@ -121,8 +121,14 @@ export default {
     },
   },
   methods: {
+    courtSelection() {
+      if (this.selectedCourt) {
+        useCourtStore().setCourt(this.selectedCourt)
+      }
+    },
     setBookHour(h) {
       this.hour = h
+      console.log(this.hour)
     },
     setBackgroundColor(h) {
       if (this.hour == h) {

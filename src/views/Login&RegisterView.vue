@@ -2,13 +2,8 @@
   <div class="min-h-screen bg-gray-50 text-black antialiased flex items-center justify-center p-4">
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
-        <div
-          class="w-16 h-16 rounded-full bg-black flex items-center justify-center text-xl text-[#8dc707] font-black mx-auto mb-3"
-        >
-          TC
-        </div>
-        <h1 class="font-black text-black text-2xl">Vitajte späť</h1>
-        <p class="text-black/55 text-sm mt-1">Prihláste sa do svojho účtu</p>
+        <h1 class="font-black text-black text-2xl">Welcome</h1>
+        <p class="text-black/55 text-sm mt-1">Register or login to your existing account</p>
       </div>
 
       <div class="bg-white border border-black/10 rounded p-6 sm:p-8 shadow-sm">
@@ -31,19 +26,19 @@
           {{ errorMessage }}
         </div>
 
-        <form @submit.prevent="handleLogin" class="space-y-4">
+        <form @submit.prevent="handleRequest" class="space-y-4">
           <div v-if="$route.name == 'register'">
             <label
               for="name"
               class="block text-xs text-black/60 mb-1 font-bold uppercase tracking-wider"
             >
-              Používateľské meno
+              Username
             </label>
             <input
               id="name"
               v-model="form.name"
               type="text"
-              placeholder="Peter Konečný"
+              placeholder="John Rice"
               required
               class="w-full px-3 py-2.5 bg-black/[0.04] border border-transparent rounded text-sm text-black font-medium placeholder:text-black/30 focus:outline-none focus:border-black focus:bg-white transition-all"
             />
@@ -53,7 +48,7 @@
               for="email"
               class="block text-xs text-black/60 mb-1 font-bold uppercase tracking-wider"
             >
-              E-mailová adresa
+              E-mail address
             </label>
             <input
               id="email"
@@ -71,13 +66,14 @@
                 for="password"
                 class="block text-xs text-black/60 font-bold uppercase tracking-wider"
               >
-                Heslo
+                Password
               </label>
               <a
+                v-if="$route.name == 'login'"
                 href="#"
                 class="text-xs text-black/50 hover:text-black font-semibold transition-colors"
               >
-                Zabudli ste heslo?
+                Forgot your password?
               </a>
             </div>
 
@@ -135,7 +131,9 @@
             :disabled="isLoading"
             class="w-full mt-2 px-4 py-3 bg-black text-[#8dc707] text-sm font-bold rounded hover:opacity-90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span v-if="!isLoading" @click="handleLogin()">Prihlásiť sa</span>
+            <span v-if="!isLoading" @click="handleRequest()" class="cursor-pointer">{{
+              $route.name.toUpperCase()
+            }}</span>
             <span v-else class="flex items-center gap-2">
               <svg
                 class="animate-spin h-4 w-4 text-[#8dc707]"
@@ -157,7 +155,7 @@
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              Prihlasovanie...
+              Waiting for response...
             </span>
             <svg
               v-if="!isLoading"
@@ -175,9 +173,9 @@
       </div>
 
       <div v-if="$route.name == 'login'" class="text-center mt-6 text-xs text-black/60 font-medium">
-        Ešte nemáte účet?
+        Don't you have account?
         <RouterLink :to="{ name: 'register' }" class="text-black font-bold hover:underline ml-1">
-          Vytvoriť registrácu
+          Create registration
         </RouterLink>
       </div>
     </div>
@@ -193,6 +191,7 @@ export default {
   data() {
     return {
       form: {
+        name: '',
         email: '',
         password: '',
         remember: false,
@@ -206,6 +205,13 @@ export default {
     ...mapStores(useAuthStore),
   },
   methods: {
+    handleRequest() {
+      if (this.$route.name == 'login') {
+        this.handleLogin()
+      } else {
+        this.handleRegister()
+      }
+    },
     async handleLogin() {
       this.isLoading = true
       this.errorMessage = ''
@@ -215,8 +221,21 @@ export default {
         await this.authStore.fetchMe()
         this.$router.push('/')
       } catch (error) {
-        this.errorMessage = error
-        console.log(this.errorMessage)
+        this.errorMessage = error.response?.data?.message || 'Login failed'
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    async handleRegister() {
+      this.isLoading = true
+      this.errorMessage = ''
+
+      try {
+        await this.authStore.register(this.form.name, this.form.email, this.form.password)
+        this.$router.push('/')
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || 'Registration failed'
       } finally {
         this.isLoading = false
       }

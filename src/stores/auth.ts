@@ -45,11 +45,25 @@ export const useAuthStore = defineStore('auth', {
       try {
         await api.post('/auth/logout')
       } catch (error) {
-        console.error('Logout failed', error)
+        console.log('Logout failed', error)
+        throw error
       } finally {
         this.token = null
         this.user = null
         localStorage.removeItem('token')
+      }
+    },
+
+    async register(name, email, password) {
+      try {
+        await api.post('/auth/register', {
+          name,
+          email,
+          password,
+        })
+      } catch (error) {
+        console.log('Register failed', error)
+        throw error
       }
     },
   },
