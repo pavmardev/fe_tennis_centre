@@ -17,36 +17,19 @@
       </svg>
     </div>
     <h2 class="font-black text-black text-3xl mb-2">Booking Confirmed!</h2>
-    <p class="text-black/50 mb-2">Central Court 1 · 2026-06-23 at 12:00</p>
-    <p class="text-black/40 text-sm mb-8">Confirmation sent to m.lindqvist@email.com</p>
+    <p class="text-black/40 text-sm mb-8">Confirmation sent to {{ user.email }}</p>
 
-    <div class="bg-white border border-black/10 rounded p-5 text-left mb-6 shadow-sm">
-      <div class="flex justify-between text-sm mb-2">
-        <span class="text-black/50">Court fee</span>
-        <span class="font-bold text-black">$30</span>
-      </div>
-      <div class="flex justify-between text-sm mb-2">
-        <span class="text-black/50">Equipment</span>
-        <span class="font-bold text-black">$3</span>
-      </div>
-      <div
-        class="border-t border-black/[0.08] mt-3 pt-3 flex justify-between font-black text-black text-base"
-      >
-        <span>Total</span>
-        <span>$33</span>
-      </div>
-    </div>
-
-    <button
+    <RouterLink
+      :to="{ name: 'courts' }"
       class="px-6 py-3 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity shadow-md"
     >
       Book Another Court
-    </button>
+    </RouterLink>
   </section>
 </template>
 <script>
+import { useAuthStore } from '@/stores/auth'
 import api from '../api/axios'
-import { useCourtStore } from '@/stores/court'
 
 export default {
   name: 'ConfirmationView',
@@ -57,16 +40,8 @@ export default {
       user: null,
     }
   },
-  async created() {
-    this.loading = true
-    try {
-      const response = await api.fetchMe()
-      this.user = response
-    } catch (err) {
-      this.$router.push('/')
-    } finally {
-      this.loading = false
-    }
+  created() {
+    this.user = useAuthStore().user
   },
 }
 </script>

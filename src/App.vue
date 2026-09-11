@@ -12,11 +12,15 @@ export default {
 </script>
 
 <template>
-  <Navbar />
-  <body class="bg-gray-50 text-black antialiased">
-    <RouterView />
-  </body>
-  <Footer />
+  <v-app>
+    <Navbar />
+
+    <v-main class="bg-gray-50 text-black antialiased">
+      <RouterView />
+    </v-main>
+
+    <Footer />
+  </v-app>
 </template>
 
 <style scoped></style>

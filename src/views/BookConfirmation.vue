@@ -42,7 +42,7 @@
           </div>
           <div class="bg-black/[0.04] rounded p-3">
             <div class="text-black/40 text-xs mb-0.5">Time</div>
-            <div class="font-bold text-black">{{ bookDetails[1] }}</div>
+            <div class="font-bold text-black">{{ bookDetails[1].time_slot }}</div>
           </div>
         </div>
       </div>
@@ -113,16 +113,22 @@
     </div>
 
     <button
-      @click=""
+      @click="createReservation()"
       class="w-full py-3.5 bg-[#8dc707] text-black font-black rounded hover:bg-[#9fd608] transition-colors shadow-sm cursor-pointer"
     >
       Confirm & Pay ${{ countTotalCost }}
     </button>
     <p class="text-center text-xs text-red-500 mt-3">Free cancellation up to 24h before</p>
+    <v-snackbar v-model="showSnackbar" timeout="3000" location="top" color="error">
+      <div class="flex items-center justify-center w-full text-center">
+        {{ error }}
+      </div>
+    </v-snackbar>
   </section>
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth'
 import api from '../api/axios'
 import { useCourtStore } from '@/stores/court'
 export default {
@@ -133,14 +139,17 @@ export default {
       selectedEquip: [],
       loading: false,
       error: null,
+      showSnackbar: false,
     }
   },
   methods: {
     setEquipment(eq) {
       if (this.selectedEquip.some((e) => e.id === eq.id)) {
         this.selectedEquip = this.selectedEquip.filter((item) => item.id !== eq.id)
+        console.log(this.selectedEquip)
       } else {
         this.selectedEquip.push(eq)
+        console.log(this.selectedEquip)
       }
     },
 
@@ -153,6 +162,37 @@ export default {
     },
     setTotalPrice() {
       useCourtStore().seTotalCost(this.countTotalCost)
+    },
+    async createReservation() {
+      this.loading = true
+      this.error = null
+
+      const courtStore = useCourtStore()
+      const userStore = useAuthStore()
+
+      console.log('user:', userStore.user.id)
+      console.log('selectedCourt:', courtStore.selectedCourt)
+      console.log('hour:', courtStore.hour)
+      console.log('selectedEquip:', this.selectedEquip)
+
+      try {
+        const response = await api.post('/reservations', {
+          user_id: userStore.user.id,
+          court_id: courtStore.selectedCourt.id,
+          time_slot_id: courtStore.hour.id,
+          reservation_date: courtStore.date,
+          equipment: this.selectedEquip.map((e) => e.id),
+        })
+
+        console.log('Rezervácia vytvorená:', response.data)
+        await this.$router.push({ name: 'confirmation' })
+      } catch (err) {
+        this.error = err.response?.data?.message || err.message
+        this.showSnackbar = true
+        console.error(err)
+      } finally {
+        this.loading = false
+      }
     },
   },
   async created() {

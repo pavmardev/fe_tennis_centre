@@ -74,7 +74,7 @@
         <button
           v-for="hour in availableTimeSlots"
           :key="hour.id"
-          @click="setBookHour(hour.time_slot)"
+          @click="setBookHour(hour)"
           :class="setBackgroundColor(hour)"
           class="py-2.5 rounded text-xs font-bold border"
         >
@@ -89,7 +89,7 @@
       @click="(setHourAndDate(), courtSelection())"
       class="block w-full text-center py-3.5 bg-black text-[#8dc707] font-black rounded hover:opacity-80 transition-opacity"
     >
-      Continue with {{ isSetHour }} →
+      Continue with {{ isSetHour.time_slot }} →
     </RouterLink>
   </section>
 </template>

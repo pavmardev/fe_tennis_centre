@@ -10,6 +10,7 @@ import BookDetailsView from '@/views/BookDetailsView.vue'
 import BookConfirmation from '@/views/BookConfirmation.vue'
 import LoginRegisterView from '@/views/Login&RegisterView.vue'
 import { useAuthStore } from '@/stores/auth'
+import ConfirmationView from '@/views/ConfirmationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,6 +80,11 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
       },
+    },
+    {
+      path: '/confirmation',
+      name: 'confirmation',
+      component: ConfirmationView,
     },
   ],
 })
