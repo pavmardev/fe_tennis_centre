@@ -444,8 +444,8 @@ export default {
       ])
       this.equipment = response1.data.data
       this.tickets = response2.data.data
-    } catch (error) {
-      this.error = error
+    } catch (err) {
+      this.error = err.response?.data?.message || err.message
       console.log(this.error)
     } finally {
       this.loading = false

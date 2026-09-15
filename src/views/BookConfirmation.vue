@@ -201,7 +201,7 @@ export default {
       const response = await api.get('/equipment')
       this.equip = response.data.data
     } catch (err) {
-      this.error = err
+      this.error = err.response?.data?.message || err.message
     } finally {
       this.loading = false
       console.log(this.equip)

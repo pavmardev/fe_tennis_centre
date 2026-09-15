@@ -23,7 +23,7 @@
           </svg>
           <span class="text-xs">Upcoming</span>
         </div>
-        <div class="font-black text-black text-2xl">2</div>
+        <div class="font-black text-black text-2xl">{{ countUpcomingReservations.length }}</div>
       </div>
 
       <div class="bg-white border border-black/10 rounded p-4">
@@ -43,36 +43,11 @@
           </svg>
           <span class="text-xs">Total Bookings</span>
         </div>
-        <div class="font-black text-black text-2xl">4</div>
-      </div>
-
-      <div class="bg-white border border-black/10 rounded p-4 col-span-2 sm:col-span-1">
-        <div class="flex items-center gap-2 text-black/40 mb-2">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-            <line x1="1" y1="10" x2="23" y2="10"></line>
-          </svg>
-          <span class="text-xs">Total Spent</span>
-        </div>
-        <div class="font-black text-black text-2xl">$104</div>
+        <div class="font-black text-black text-2xl">{{ bookings.length }}</div>
       </div>
     </div>
 
     <div class="flex items-center gap-2 mb-5 flex-wrap">
-      <!---<button
-          class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors 
-        >
-          all
-        </button>-->
       <button
         @click="setCategory(c)"
         :class="backgroundButton(c)"
@@ -98,7 +73,7 @@
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-black text-black">{{ book.name }}</span>
+                <span class="font-black text-black">{{ book.court }}</span>
                 <span
                   :class="selectColor(book.state)"
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
@@ -121,7 +96,7 @@
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
-                  {{ book.date }}</span
+                  {{ book.reservation_date }}</span
                 >
                 <span class="flex items-center gap-1"
                   ><svg
@@ -135,33 +110,34 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  {{ book.time }}</span
+                  {{ book.reservation_time }}</span
                 >
-                <span v-if="book.equipment" class="flex items-center gap-1"
-                  ><svg
-                    width="11"
-                    height="11"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
+                <div v-if="book.equipment">
+                  <span v-for="eq in book.equipment" class="flex items-center gap-1"
+                    ><svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
+                      <circle cx="9" cy="21" r="1"></circle>
+                      <circle cx="20" cy="21" r="1"></circle>
+                      <path
+                        d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                      ></path>
+                    </svg>
+                    {{ eq.name }}</span
                   >
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path
-                      d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                    ></path>
-                  </svg>
-                  {{ book.equipment }}</span
-                >
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="flex items-center gap-3">
-            <span class="font-black text-black text-lg">{{ book.price }}</span>
+          <div v-if="book.state != 'Finished'" class="flex items-center gap-3">
             <button
-              v-if="book.state != 'Cancelled'"
+              @click="cancelReservation(book.id)"
               class="text-xs text-red-500 hover:text-red-700 font-bold transition-colors"
             >
               Cancel
@@ -169,112 +145,38 @@
           </div>
         </div>
       </div>
-      <!---<div class="bg-white border border-black/10 rounded p-4 sm:p-5 opacity-70">
-          <div class="flex items-start justify-between gap-3 flex-wrap">
-            <div class="flex items-start gap-3">
-              <div
-                class="mt-0.5 w-9 h-9 rounded bg-black/5 flex items-center justify-center shrink-0"
-              >
-                <span class="text-xs font-black text-black/40">CL</span>
-              </div>
-              <div>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="font-black text-black/60 line-through">Court 1 (Clay)</span>
-                  <span
-                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-600"
-                  >
-                    Cancelled
-                  </span>
-                </div>
-                <div class="flex items-center gap-3 mt-1 text-xs text-black/30">
-                  <span class="flex items-center gap-1"
-                    ><svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    2026-07-01</span
-                  >
-                  <span class="flex items-center gap-1"
-                    ><svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    10:00 - 11:30</span
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="font-bold text-black/40 text-lg">$45</span>
-              <span class="text-xs text-black/30">#RES-9300</span>
-            </div>
-          </div>
-        </div>-->
     </div>
+    <v-snackbar v-model="showSnackbar" timeout="3000" location="top" :color="snackbarColor">
+      <div class="flex items-center justify-center w-full text-center">
+        {{ snackbarText }}
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth'
+import api from '../api/axios'
 export default {
   name: 'ReservationsView',
   data() {
     return {
-      bookingCategories: ['All', 'Confirmed', 'Pending', 'Cancelled'],
-      bookings: [
-        {
-          surface: 'CL',
-          name: 'Court 1 (Clay)',
-          date: '2026-07-10',
-          time: '2026-07-10',
-          equipment: '2x Rackets',
-          state: 'Confirmed',
-          price: '$45',
-        },
-        {
-          surface: 'GR',
-          name: 'Court 3 (Grass)',
-          date: '2026-07-12',
-          time: '09:00 - 10:00',
-          state: 'Pending',
-          price: '$30',
-        },
-        {
-          surface: 'HA',
-          name: 'Court 2 (Hardcourt)',
-          date: '2026-06-28',
-          time: '18:00 - 19:00',
-          state: 'Cancelled',
-          equipment: '1x Balls',
-          price: '$29',
-        },
-      ],
+      error: null,
+      loading: false,
+      bookingCategories: ['All', 'Upcoming', 'Finished'],
+      bookings: [],
       category: 'All',
+      showSnackbar: false,
+      snackbarColor: 'success',
+      snackbarText: '',
     }
   },
   methods: {
     selectColor(state) {
-      if (state == 'Confirmed') {
+      if (state == 'Upcoming') {
         return 'bg-emerald-500/10 text-emerald-600'
-      } else if (state == 'Pending') {
-        return 'bg-amber-500/10 text-amber-600'
       } else {
-        return 'bg-red-500/10 text-red-600'
+        return 'bg-amber-500/10 text-amber-600'
       }
     },
     setCategory(cat) {
@@ -287,6 +189,58 @@ export default {
         return 'bg-white text-black/50'
       }
     },
+    async fetchReservations() {
+      this.loading = true
+      const user = useAuthStore().user.id
+
+      try {
+        const response = await api.get(`/reservations/user/${user}`)
+        this.bookings = response?.data.data
+      } catch (err) {
+        this.error = err.response?.data?.message
+      } finally {
+        this.loading = false
+      }
+      this.setReservationState()
+    },
+    async cancelReservation(bookId) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await api.delete(`/reservations/${bookId}`)
+        this.snackbarColor = 'success'
+        this.snackbarText = response.data?.message
+        this.showSnackbar = true
+        await this.fetchReservations()
+      } catch (err) {
+        this.error = err.response?.data?.message || err.message
+        this.snackbarColor = 'error'
+        this.snackbarText = err.response?.data?.message
+        this.showSnackbar = true
+      } finally {
+        this.loading = false
+      }
+    },
+    setReservationState() {
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      const day = String(today.getDate()).padStart(2, '0')
+      const currentDate = `${year}-${month}-${day}`
+
+      if (this.bookings) {
+        this.bookings = this.bookings.map((book) => {
+          let state = 'Finished'
+
+          if (book.reservation_date >= currentDate) {
+            state = 'Upcoming'
+          }
+
+          return { ...book, state }
+        })
+      }
+    },
   },
   computed: {
     filterByCategory() {
@@ -296,6 +250,12 @@ export default {
         return this.bookings.filter((c) => c.state == this.category)
       }
     },
+    countUpcomingReservations() {
+      return this.bookings.filter((res) => res.state == 'Upcoming')
+    },
+  },
+  async created() {
+    this.fetchReservations()
   },
 }
 </script>

@@ -18,12 +18,6 @@
     </div>
     <CourtsListView :category="defaultCategory" />
   </section>
-
-  <hr class="border-black/10 my-10 max-w-7xl mx-auto" />
-
-  <hr class="border-black/10 my-10 max-w-7xl mx-auto" />
-
-  <hr class="border-black/10 my-10 max-w-7xl mx-auto" />
 </template>
 
 <script>

@@ -27,6 +27,7 @@
           <div class="flex flex-wrap gap-1.5">
             <span
               v-for="feature in court.features"
+              :key="feature.description"
               class="inline-flex items-center gap-1 bg-black/[0.05] text-black/60 text-xs px-2 py-1 rounded"
             >
               <svg
@@ -133,8 +134,8 @@ export default {
       }
 
       this.courts = response.data.data
-    } catch (error) {
-      this.error = error.response?.data?.message
+    } catch (err) {
+      this.error = err.response?.data?.message || err.message
     } finally {
       this.loading = false
     }

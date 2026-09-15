@@ -148,7 +148,7 @@ export default {
         })
         this.timeSlots = response.data.data
       } catch (err) {
-        this.error = err
+        this.error = err.response?.data?.message || err.message
         console.log(err)
       } finally {
         this.loading = false
@@ -184,7 +184,7 @@ export default {
       this.selectedCourt = response1.data.data
       this.timeSlots = response2.data.data
     } catch (err) {
-      this.error = err
+      this.error = err.response?.data?.message || err.message
       console.log(this.error)
     } finally {
       this.loading = false
