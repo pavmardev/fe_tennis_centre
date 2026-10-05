@@ -9,31 +9,36 @@
       </p>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+    <div v-if="subscriptions.length > 0" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
       <div
         v-for="sub in subscriptions"
-        :class="'border-' + isSenior(sub.plate)"
+        :key="sub.id"
+        :class="sub.name === 'Senior Plan' ? 'border-[#8dc707]' : 'border-black/10'"
         class="rounded border-2 overflow-hidden transition-colors hover:border-[#8dc707]/50"
       >
         <div
-          v-if="senior"
+          v-if="sub.name === 'Senior Plan'"
           class="bg-[#8dc707] text-black text-[10px] font-black tracking-widest uppercase text-center py-1.5"
         >
           Most Popular
         </div>
         <div class="p-5 bg-white h-full flex flex-col justify-between">
           <div>
-            <div class="text-sm font-bold text-black/40 mb-1">{{ sub.plate }}</div>
+            <div class="text-sm font-bold text-black/40 mb-1">{{ sub.name }}</div>
             <div class="flex items-baseline gap-1 mb-1">
               <span class="font-black text-black text-4xl">${{ sub.cost }}</span>
               <span class="text-xs text-black/40">/month</span>
             </div>
             <div class="text-xs font-bold text-[#8dc707] mb-4">
-              {{ sub.bookingsPerMonth ?? 'Unlimited' }} bookings/mo
+              {{ sub.duration ?? 'Unlimited' }} bookings/mo
             </div>
 
             <div class="space-y-2 mb-5">
-              <div v-for="feat in sub.features" class="flex items-start gap-2 text-xs">
+              <div
+                v-for="(feat, index) in sub.features"
+                :key="index"
+                class="flex items-start gap-2 text-xs"
+              >
                 <svg
                   width="11"
                   height="11"
@@ -47,15 +52,18 @@
                 >
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                <span class="text-black/60">{{ feat }}</span>
+                <span class="text-black/60">{{ feat.description }}</span>
               </div>
             </div>
           </div>
           <button
-            :class="'bg-' + buttonColor()[1] + ' text-' + buttonColor()[0]"
-            class="w-full py-2.5 rounded text-sm font-black transition-colorstext-[#8dc707] hover:opacity-80"
+            @click="updateMembership(sub.id)"
+            :class="
+              sub.name === 'Senior Plan' ? 'bg-[#8dc707] text-black' : 'bg-black text-[#8dc707]'
+            "
+            class="w-full py-2.5 rounded text-sm font-black transition-colors hover:opacity-80"
           >
-            Get {{ sub.plate }}
+            Get {{ sub.name }}
           </button>
         </div>
       </div>
@@ -68,73 +76,74 @@
       Cancel anytime
     </div>
   </div>
+  <v-snackbar v-model="showSnackbar" timeout="3000" location="top" :color="snackbarColor">
+    <div class="flex items-center justify-center w-full text-center">
+      {{ snackbarText }}
+    </div>
+  </v-snackbar>
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth'
+import api from '../api/axios'
+
 export default {
   name: 'SubscriptionsView',
   data() {
     return {
-      subscriptions: [
-        {
-          plate: 'Bronze Plan',
-          cost: 29,
-          bookingsPerMonth: 4,
-          features: ['Access to all court types', '3 days advanced booking window'],
-        },
-        {
-          plate: 'Silver Plan',
-          cost: 49,
-          bookingsPerMonth: 8,
-          features: [
-            'Access to all court types',
-            '7 days advanced booking window',
-            '10% discount on racket rentals',
-          ],
-        },
-        {
-          plate: 'Senior Plan',
-          cost: 69,
-          bookingsPerMonth: 12,
-          features: [
-            'Access to all court types',
-            '14 days advanced booking window',
-            'Free locker room access',
-            'Guest passes included (2/mo)',
-          ],
-        },
-        {
-          plate: 'Gold Plan',
-          cost: 99,
-          bookingsPerMonth: null,
-          features: [
-            'Unlimited court bookings',
-            '30 days advanced booking window',
-            'Free rackets & balls rental',
-            'Priority lounge & sauna access',
-          ],
-        },
-      ],
-      senior: false,
+      loading: false,
+      error: null,
+      subscriptions: [],
+      user: null,
+      showSnackbar: false,
+      snackbarColor: 'success',
+      snackbarText: '',
     }
   },
   methods: {
-    isSenior(plan) {
-      if (plan == 'Senior Plan') {
-        this.senior = true
-        return '[#8dc707]'
-      } else {
-        this.senior = false
-        return 'black/10'
+    async updateMembership(id) {
+      const authStore = useAuthStore()
+
+      if (!authStore.user?.id) {
+        this.snackbarColor = 'error'
+        this.snackbarText = 'Unauthenticated'
+        this.showSnackbar = true
+        return
+      }
+
+      this.user = authStore.user.id
+      this.loading = true
+
+      try {
+        const response = await api.patch(`/users/${this.user}`, {
+          membership_id: id,
+        })
+
+        this.snackbarColor = 'success'
+        this.snackbarText = response?.data?.message || 'Membership updated successfully'
+        this.showSnackbar = true
+      } catch (err) {
+        const errorMessage = err.response?.data?.message || err.message || 'An error occurred'
+
+        this.error = errorMessage
+        this.snackbarColor = 'error'
+        this.snackbarText = errorMessage
+        this.showSnackbar = true
+      } finally {
+        this.loading = false
       }
     },
-    buttonColor() {
-      if (!this.senior) {
-        return ['[#8dc707]', 'black']
-      } else {
-        return ['black', '[#8dc707]']
-      }
-    },
+  },
+  async created() {
+    this.loading = true
+    try {
+      const response = await api.get('/memberships')
+      this.subscriptions = response?.data?.data || []
+    } catch (err) {
+      this.error = err.response?.data?.message || err.message
+    } finally {
+      this.loading = false
+    }
   },
 }
 </script>

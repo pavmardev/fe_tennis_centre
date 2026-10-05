@@ -28,7 +28,7 @@
       <div v-if="authStore.isAuthenticated && authStore.user" class="flex items-center gap-2">
         <RouterLink
           :to="{ name: 'profile' }"
-          class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded hover:bg-black/5 transition-colors cursor-pointer"
+          class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded hover:opacity-80 transition-colors cursor-pointer"
         >
           <h3
             class="w-30 h-10 rounded bg-black flex items-center justify-center text-xs text-[#8dc707] font-black"
@@ -79,6 +79,7 @@ export default {
         ['Book a Court', 'courts'],
         ['My Bookings', 'reservations'],
         ['Memberships', 'subscriptions'],
+        ['Admin', 'admin'],
       ],
     }
   },

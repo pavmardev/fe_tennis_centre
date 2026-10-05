@@ -1,8 +1,15 @@
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-    <h1 class="font-black text-black text-3xl mb-2">My Bookings</h1>
+    <div class="flex items-center justify-between mb-2">
+      <h1 class="font-black text-black text-3xl">{{ setTitle }}</h1>
+      <button
+        v-if="this.$route.name == 'admin' && this.showAll"
+        class="px-4 py-2 bg-[#8dc707] hover:bg-[#7cb006] text-black font-bold text-xs rounded transition-colors"
+      >
+        + Add Reservation
+      </button>
+    </div>
     <p class="text-black/50 text-sm mb-8">Manage and track all your court reservations.</p>
-
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
       <div class="bg-white border border-black/10 rounded p-4">
         <div class="flex items-center gap-2 text-black/40 mb-2">
@@ -51,7 +58,7 @@
       <button
         @click="setCategory(c)"
         :class="backgroundButton(c)"
-        :key="c"
+        :key="c.id"
         v-for="c in bookingCategories"
         class="px-3 py-1.5 rounded text-xs font-bold capitalize transition-colors border border-black/10 hover:border-[#8dc707]/50"
       >
@@ -62,18 +69,23 @@
     <div class="space-y-3">
       <div
         v-for="book in filterByCategory"
+        :key="book.id"
         class="bg-white border border-black/10 rounded p-4 sm:p-5"
       >
-        <div class="flex items-start justify-between gap-3 flex-wrap">
-          <div class="flex items-start gap-3">
-            <div
-              class="mt-0.5 w-9 h-9 rounded bg-[#8dc707]/15 flex items-center justify-center shrink-0"
-            >
-              <span class="text-xs font-black text-[#5a8000]">{{ book.surface }}</span>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center flex-1 min-w-[280px]">
+            <div class="flex flex-col items-center sm:col-span-3 sm:items-start shrink-0">
+              <div class="w-9 h-9 rounded bg-[#8dc707]/15 flex items-center justify-center">
+                <span class="text-xs font-black text-[#5a8000]">{{ book.surface }}</span>
+              </div>
+              <span v-if="$route.name === 'admin'" class="font-black text-black text-base mt-1">
+                #ID-{{ book.id }}
+              </span>
             </div>
-            <div>
+
+            <div class="sm:col-span-4 space-y-1">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-black text-black">{{ book.court }}</span>
+                <span class="font-black text-black text-base">{{ book.court }}</span>
                 <span
                   :class="selectColor(book.state)"
                   class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
@@ -81,11 +93,34 @@
                   {{ book.state }}
                 </span>
               </div>
-              <div class="flex items-center gap-3 mt-1 text-xs text-black/40">
-                <span class="flex items-center gap-1"
-                  ><svg
-                    width="11"
-                    height="11"
+
+              <div
+                v-if="$route.name === 'admin' && book.name"
+                class="flex items-center gap-1.5 text-xs font-semibold text-black/70"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>{{ book.name }}</span>
+              </div>
+            </div>
+
+            <div class="sm:col-span-5 flex flex-col justify-center gap-1.5 text-xs text-black/60">
+              <div class="flex items-center gap-4 flex-wrap">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <svg
+                    width="13"
+                    height="13"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -96,12 +131,12 @@
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
-                  {{ book.reservation_date }}</span
-                >
-                <span class="flex items-center gap-1"
-                  ><svg
-                    width="11"
-                    height="11"
+                  {{ book.reservation_date }}
+                </span>
+                <span class="flex items-center gap-1.5 font-medium">
+                  <svg
+                    width="13"
+                    height="13"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -110,42 +145,60 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
-                  {{ book.reservation_time }}</span
+                  {{ book.reservation_time }}
+                </span>
+              </div>
+
+              <div v-if="book.equipment" class="flex items-center gap-2 flex-wrap">
+                <span
+                  v-for="eq in book.equipment"
+                  :key="eq.id"
+                  class="flex items-center gap-1 text-black/50"
                 >
-                <div v-if="book.equipment">
-                  <span v-for="eq in book.equipment" class="flex items-center gap-1"
-                    ><svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <circle cx="9" cy="21" r="1"></circle>
-                      <circle cx="20" cy="21" r="1"></circle>
-                      <path
-                        d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                      ></path>
-                    </svg>
-                    {{ eq.name }}</span
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
                   >
-                </div>
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path
+                      d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                    ></path>
+                  </svg>
+                  {{ eq.name }}
+                </span>
               </div>
             </div>
           </div>
 
-          <div v-if="book.state != 'Finished'" class="flex items-center gap-3">
+          <div v-if="showDiv(book.state)" class="flex items-center gap-3 shrink-0 ml-auto">
             <button
               @click="cancelReservation(book.id)"
               class="text-xs text-red-500 hover:text-red-700 font-bold transition-colors"
             >
               Cancel
             </button>
+            <button
+              @click="selectBook(book)"
+              class="text-xs text-black-500 hover:text-black-700 font-bold transition-colors"
+            >
+              Edit
+            </button>
           </div>
         </div>
       </div>
     </div>
+
+    <EditReservationView
+      v-if="selectedBooking"
+      v-model="showEditModal"
+      :booking="selectedBooking"
+      @notify="handleNotification"
+    />
     <v-snackbar v-model="showSnackbar" timeout="3000" location="top" :color="snackbarColor">
       <div class="flex items-center justify-center w-full text-center">
         {{ snackbarText }}
@@ -157,8 +210,18 @@
 <script>
 import { useAuthStore } from '@/stores/auth'
 import api from '../api/axios'
+import EditReservationView from './EditReservationView.vue'
 export default {
   name: 'ReservationsView',
+  components: {
+    EditReservationView,
+  },
+  props: {
+    showAll: {
+      type: Boolean,
+      required: false,
+    },
+  },
   data() {
     return {
       error: null,
@@ -169,6 +232,8 @@ export default {
       showSnackbar: false,
       snackbarColor: 'success',
       snackbarText: '',
+      showEditModal: false,
+      selectedBooking: null,
     }
   },
   methods: {
@@ -178,6 +243,15 @@ export default {
       } else {
         return 'bg-amber-500/10 text-amber-600'
       }
+    },
+    showDiv(state) {
+      if (state != 'Finished') {
+        return true
+      }
+    },
+    selectBook(book) {
+      this.selectedBooking = book
+      this.showEditModal = true
     },
     setCategory(cat) {
       this.category = cat
@@ -194,8 +268,13 @@ export default {
       const user = useAuthStore().user.id
 
       try {
-        const response = await api.get(`/reservations/user/${user}`)
-        this.bookings = response?.data.data
+        if (this.$route.name == 'reservations') {
+          const response = await api.get(`/reservations/user/${user}`)
+          this.bookings = response?.data.data
+        } else {
+          const response = await api.get('/reservations')
+          this.bookings = response?.data.data
+        }
       } catch (err) {
         this.error = err.response?.data?.message
       } finally {
@@ -241,17 +320,39 @@ export default {
         })
       }
     },
+    async handleNotification({ text, color, refresh }) {
+      this.snackbarText = text
+      this.snackbarColor = color
+      this.showSnackbar = true
+
+      if (refresh) {
+        await this.fetchReservations()
+      }
+    },
   },
   computed: {
     filterByCategory() {
-      if (this.category == 'All') {
-        return this.bookings
-      } else {
-        return this.bookings.filter((c) => c.state == this.category)
+      let result = Array.isArray(this.bookings) ? this.bookings : []
+
+      if (this.category !== 'All') {
+        result = result.filter((c) => c.state === this.category)
       }
+
+      if (this.$route.name === 'admin' && !this.showAll) {
+        return result.slice(0, 10)
+      }
+
+      return result
     },
     countUpcomingReservations() {
       return this.bookings.filter((res) => res.state == 'Upcoming')
+    },
+    setTitle() {
+      if (this.$route.name == 'reservations') {
+        return 'My Bookings'
+      } else {
+        return 'Bookings'
+      }
     },
   },
   async created() {

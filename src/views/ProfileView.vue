@@ -2,15 +2,13 @@
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
     <h1 class="font-black text-black text-3xl mb-8">My Profile</h1>
 
-    <div class="grid sm:grid-cols-3 gap-6">
+    <div v-if="userData" class="grid sm:grid-cols-3 gap-6">
       <div class="sm:col-span-1">
         <div class="bg-white border border-black/10 rounded p-5 text-center">
           <div class="relative inline-block mb-4">
             <div
               class="w-20 h-20 rounded-full bg-black flex items-center justify-center text-2xl text-[#8dc707] font-black mx-auto"
-            >
-              ML
-            </div>
+            ></div>
             <button
               class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#8dc707] flex items-center justify-center border-2 border-white shadow-sm hover:scale-105 transition-transform"
             >
@@ -30,7 +28,7 @@
               </svg>
             </button>
           </div>
-          <h2 class="font-black text-black mb-0.5">Marcus Lindqvist</h2>
+          <h2 class="font-black text-black mb-0.5">{{ labelTitles[0].text }}</h2>
           <div
             class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#8dc707]/15 rounded text-xs font-bold text-[#5a8000]"
           >
@@ -57,8 +55,10 @@
           <h3 class="font-black text-black mb-4">Personal Details</h3>
           <div class="grid grid-cols-2 gap-4">
             <div v-for="label in labelTitles">
-              <label class="block text-xs text-black/40 mb-1 font-bold">{{ label }}</label>
-              <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium"></div>
+              <label class="block text-xs text-black/40 mb-1 font-bold">{{ label.name }}</label>
+              <div class="px-3 py-2.5 bg-black/[0.04] rounded text-sm text-black font-medium">
+                {{ label.text }}
+              </div>
             </div>
           </div>
         </div>
@@ -93,10 +93,45 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth'
+import api from '../api/axios'
 export default {
   data() {
     return {
-      labelTitles: ['First Name', 'Last Name', 'Phone', 'Member Since', 'Email'],
+      userData: null,
+      loading: false,
+      error: null,
+    }
+  },
+  computed: {
+    labelTitles() {
+      if (!this.userData) return []
+      return [
+        { name: 'Name', text: this.userData.name },
+        { name: 'Member Since', text: this.userData.email_verified_at.slice(0, 10) },
+        { name: 'Email', text: this.userData.email },
+        { name: 'Membership', text: this.userData.membership ?? 'None' },
+      ]
+    },
+  },
+  async mounted() {
+    const userId = useAuthStore().user?.id
+
+    if (!userId) {
+      this.error = 'Unauthenticated'
+      return
+    }
+
+    try {
+      this.loading = true
+      const response = await api.get(`/users/${userId}`)
+      this.userData = response?.data?.data
+      console.log(this.userData)
+    } catch (err) {
+      this.error = err.response?.data?.message || err.message || 'Error loading user'
+      window.alert(this.error)
+    } finally {
+      this.loading = false
     }
   },
 }

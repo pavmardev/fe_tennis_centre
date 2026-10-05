@@ -170,11 +170,6 @@ export default {
       const courtStore = useCourtStore()
       const userStore = useAuthStore()
 
-      console.log('user:', userStore.user.id)
-      console.log('selectedCourt:', courtStore.selectedCourt)
-      console.log('hour:', courtStore.hour)
-      console.log('selectedEquip:', this.selectedEquip)
-
       try {
         const response = await api.post('/reservations', {
           user_id: userStore.user.id,
